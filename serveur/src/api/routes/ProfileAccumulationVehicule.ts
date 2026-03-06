@@ -217,6 +217,7 @@ export const creationRouteurProfileAccumVehiculeQuartier = (pool: Pool): Router 
                     return res.status(500).send('Erreur: JSON parsing failed.');
                 }
             } else {
+                console.log('errorData',errorData)
                 console.error(`Processus enfant échoué avec le code : ${code}`);
                 return res.status(500).send(`Erreur: ${errorData}`);
             }

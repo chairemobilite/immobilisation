@@ -498,7 +498,7 @@ def get_data_for_sector_from_database(quartier:int,engine:sqlalchemy.Engine)->Ve
     other_geom_cols = ['geom_ori', 'geom_des', 'trip_line']
 
     for col in other_geom_cols:
-        if data_od_survey[col].dtype == object:
+        # if data_od_survey[col].dtype == object:
             data_od_survey[col] = data_od_survey[col].apply(lambda x: wkb.loads(x, hex=True) if isinstance(x, (str, bytes)) else None)
     vap_to_return = VehicleAccumulationProfile(data_od_survey,data_territory)
     return vap_to_return
