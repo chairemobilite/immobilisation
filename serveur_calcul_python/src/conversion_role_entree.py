@@ -2,6 +2,7 @@ import classes.parking_inventory_inputs as PII
 import classes.parking_inventory as PI
 import classes.parking_reg_sets as PRS
 import classes.tax_dataset as TD
+import calcs.inventory_calcs as IC
 import pandas as pd
 import config.config_db as cfg
 from sqlalchemy import create_engine,Engine
@@ -21,5 +22,5 @@ if __name__ =="__main__":
         # va chercher un territoire d'analyse pour l'instant
         tax_data = TD.tax_database_for_analysis_territory(1)
         parking_inputs = PII.generate_input_from_PRS_TD(random_prs,tax_data)
-        parking_inventory = PI.calculate_inventory_from_inputs_class(parking_inputs)
+        parking_inventory = IC.calculate_inventory_from_inputs_class(parking_inputs)
         print(parking_inventory)

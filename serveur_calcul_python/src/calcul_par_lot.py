@@ -1,4 +1,5 @@
 import classes.parking_inventory as PI
+import calcs.inventory_calcs as IC
 import sys
 import os
 import config.config_db as cf_db
@@ -21,7 +22,7 @@ if __name__=="__main__":
             connection = psycopg2.connect(cf_db.pg_string)
             print("Connexion à la base de données réussie")
         #breakpoint()
-        inventaire_lot = PI.calculate_inventory_by_lot(lot_a_analyser)
+        inventaire_lot = IC.calculate_inventory_by_lot(lot_a_analyser)
         json_inventaire_quartier = inventaire_lot.to_json()
         #breakpoint()
         print(json_inventaire_quartier)

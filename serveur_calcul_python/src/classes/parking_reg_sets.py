@@ -301,6 +301,7 @@ def get_all_reg_sets_from_database(engine:sqlalchemy.Engine=None)->list[ParkingR
         rsi_list:list[int] = reg_sets_ids[config_db.db_column_reg_sets_id].unique().tolist()
         reg_sets = from_sql(rsi_list)
     return reg_sets
+
 if __name__=="__main__":
     #entete_reglement = pd.DataFrame([[100,"test",1995,2009,"VQZ3","Annexe D","3.1-st-sacrement","CUQ"],
     #                                 [101,"test",1995,2009,"VQZ3","Annexe D","6.1-st-sacrement","CUQ"]],

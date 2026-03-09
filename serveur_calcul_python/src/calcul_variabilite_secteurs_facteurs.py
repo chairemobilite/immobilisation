@@ -1,12 +1,6 @@
 import os
-import classes.parking_inventory as PI
-import classes.parking_inventory_inputs as PII
-import classes.parking_regs as PR
-import classes.parking_reg_sets as PRS
-import classes.tax_dataset as TD
+import calcs.variability_analysis as VA
 import config.config_db as cf
-import pandas as pd
-import numpy as np
 import sqlalchemy
 import debugpy
 import time
@@ -23,7 +17,7 @@ if __name__== "__main__":
             connection = psycopg2.connect(cf.pg_string)
             print("Connexion à la base de données réussie")
         con = sqlalchemy.create_engine(cf.pg_string)
-        success = PI.analyse_variabilite(con,[0.75,1,1.25])
+        success = VA.analyse_variabilite(con,[0.75,1,1.25])
         if success:
             print('[true]')
         else:

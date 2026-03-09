@@ -38,7 +38,7 @@ export const creationRouteurAnalyseVariabilite = (pool: Pool): Router => {
     }
 
     const calculeAnalyseVariabilite: RequestHandler = async (req, res, next): Promise<void> => {
-        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/calcul_variabilite_secteurs_facteurs.py");
+        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/src/calcul_variabilite_secteurs_facteurs.py");
 
         // Chemin direct vers l'interpréteur Python dans l'environnement Conda
         const pythonExecutable = '/opt/conda/envs/serveur_calcul_python/bin/python3';

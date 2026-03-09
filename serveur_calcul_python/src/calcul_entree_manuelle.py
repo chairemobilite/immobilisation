@@ -8,6 +8,8 @@ import time
 import psycopg2
 import config.config_db as cf_db
 import classes.parking_inventory_inputs as PII
+import calcs.inventory_calcs as IC
+
 def main():
     if os.getenv("DEBUGPY_CALC_ENABLE", "true").lower() == "true":
             time.sleep(10)
@@ -28,7 +30,7 @@ def main():
     PII_transmit = PII.ParkingCalculationInputs(array)
 
     # Perform your calculations here
-    inventaire = PI.calculate_inventory_from_inputs_class(PII_transmit)
+    inventaire = IC.calculate_inventory_from_inputs_class(PII_transmit)
     # convert dataframe to string for dumping it to console
     string_output = inventaire.to_json()
     # Print the result to stdout

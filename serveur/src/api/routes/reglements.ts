@@ -336,7 +336,7 @@ export const creationRouteurReglements = (pool: Pool): Router => {
         if (typeof (req.query['id_reg_stat']) === 'undefined' && typeof (req.query['id_unite']) === 'undefined') {
             res.status(400).json({ error: "Doit fournir id_reg_stat et id_unite" });
         }
-        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/calculer_valeurs_graphiques.py");
+        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/src/calculer_valeurs_graphiques.py");
 
         // Chemin direct vers l'interpréteur Python dans l'environnement Conda
         const pythonExecutable = '/opt/conda/envs/serveur_calcul_python/bin/python3';

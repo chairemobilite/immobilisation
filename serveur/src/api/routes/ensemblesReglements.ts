@@ -475,7 +475,7 @@ export const creationRouteurEnsemblesReglements = (pool: Pool): Router => {
   };
 
   const infoPourGraphiques: RequestHandler<void> = async (req, res) => {
-    const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/obtention_information_graphiques.py");
+    const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/src/obtention_information_graphiques.py");
 
     // Chemin direct vers l'interpréteur Python dans l'environnement Conda
     const pythonExecutable = '/opt/conda/envs/serveur_calcul_python/bin/python3';
