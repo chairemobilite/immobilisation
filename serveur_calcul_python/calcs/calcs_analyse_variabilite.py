@@ -5,9 +5,9 @@ import pandas as pd
 from config import config_db
 from classes import tax_dataset as TD
 from classes import parking_reg_sets as PRS
-import inventory_calcs as IC
+import serveur_calcul_python.calcs.calcs_inventaire as IC
 from classes import parking_inventory as PI
-from aggregation import inventory_aggregation as IA
+from serveur_calcul_python.aggregation import agg_inventaire as IA
 from sqlalchemy import Engine
 
 

@@ -174,7 +174,7 @@ export const creationRouteurProfileAccumVehiculeQuartier = (pool: Pool): Router 
     const calculPAV: RequestHandler<ParamsQuartier> = async (req, res): Promise<void> => {
         console.log('calcul du profile accumulation vehicule')
         const { id } = req.params;
-        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/src/calcul_profils_acc_veh.py");
+        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/calcul_profils_acc_veh.py");
 
         // Chemin direct vers l'interpréteur Python dans l'environnement Conda
         const pythonExecutable = '/opt/conda/envs/serveur_calcul_python/bin/python3';

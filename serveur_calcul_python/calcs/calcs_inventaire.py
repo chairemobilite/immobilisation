@@ -11,7 +11,7 @@ from classes import parking_regs as PR
 from classes import reg_set_territory as RST
 from classes import parking_reg_sets as PRS
 from classes import tax_dataset as TD
-from aggregation import inventory_aggregation as IA
+from aggregation import agg_inventaire as IA
 
 
 def calculate_inventory_by_analysis_sector(sector_to_calculate:int, create_html:bool = False,overwrite:int=0)->PI.ParkingInventory:
@@ -394,12 +394,15 @@ def simple_or_operation(inventory_1:PI.ParkingInventory,inventory_2:PI.ParkingIn
     logger = logging.getLogger(__name__)
     logger.info('entering simple OR operation')
     logger.info('Entrée dans l''opération OU SIMPLE')
+    # merge les deux dataframes en gardant les deux mins et les deux maxes
     parking_frame_out = pd.DataFrame()
     parking_frame_out = inventory_1.parking_frame[[config_db.db_column_lot_id,'n_places_min','n_places_max']].copy()
     parking_frame_out.rename(columns={'n_places_min':'n_places_min_left','n_places_max':'n_places_max_left'},inplace=True)
     parking_frame_right =inventory_2.parking_frame[[config_db.db_column_lot_id,'n_places_min','n_places_max']].copy()
     parking_frame_right.rename(columns={'n_places_min':'n_places_min_right','n_places_max':'n_places_max_right'},inplace=True)
     parking_frame_out = parking_frame_out.merge(parking_frame_right,on=config_db.db_column_lot_id)
+
+    ## Sélection du bon inventaire
     # implémenté comme prenant le minimum des requis minimaux. Ceci et mis en place selon la logique qu'un développeur immobilier voudrait potentiellement 
     # Cas 1 la gauche_min est plus petit: min_final = min_left, max_final = max_left
     parking_frame_out.loc[parking_frame_out['n_places_min_left']<parking_frame_out['n_places_min_right'],'n_places_min_final'] = parking_frame_out.loc[parking_frame_out['n_places_min_left']<parking_frame_out['n_places_min_right'],'n_places_min_left']
@@ -407,6 +410,8 @@ def simple_or_operation(inventory_1:PI.ParkingInventory,inventory_2:PI.ParkingIn
     # Cas 2 la droite_min est plus petit: min_final = min_right, max_final = max_right
     parking_frame_out.loc[parking_frame_out['n_places_min_left']>=parking_frame_out['n_places_min_right'],'n_places_min_final'] = parking_frame_out.loc[parking_frame_out['n_places_min_left']>=parking_frame_out['n_places_min_right'],'n_places_min_right']
     parking_frame_out.loc[parking_frame_out['n_places_min_left']>=parking_frame_out['n_places_min_right'],'n_places_max_final'] = parking_frame_out.loc[parking_frame_out['n_places_min_left']>=parking_frame_out['n_places_min_right'],'n_places_max_right']
+
+    ## Manipulation pour ramener le frame au bon format
     # ramène le vieux frame
     old_parking_frame = inventory_1.parking_frame.copy()
     # drop gauche/droite

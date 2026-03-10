@@ -24,7 +24,7 @@ class ParkingInventory():
         if all(item in parking_inventory_frame.columns for item in fields_to_confirm):
             self.parking_frame:pd.DataFrame = parking_inventory_frame
         else: 
-            KeyError("Colonnes suivantes doivent être présentes dans l'estimé ['id_cadastre','n_places','methode_estime','ens_reg_estim','reg_estim','commentaire']")
+            KeyError("Colonnes suivantes doivent être présentes dans l'estimé ['g_no_lot','n_places_min','n_places_max','methode_estime','id_er','id_reg_stat','cubf','commentaire']")
        
     def __repr__(self):
         return f'N_lots ={len(self.parking_frame[config_db.db_column_lot_id].unique())}, N_places_min = {self.parking_frame['n_places_min'].agg('sum')}'

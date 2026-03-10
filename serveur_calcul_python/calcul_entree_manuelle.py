@@ -8,7 +8,7 @@ import time
 import psycopg2
 import config.config_db as cf_db
 import classes.parking_inventory_inputs as PII
-import calcs.inventory_calcs as IC
+import serveur_calcul_python.calcs.calcs_inventaire as IC
 
 def main():
     if os.getenv("DEBUGPY_CALC_ENABLE", "true").lower() == "true":

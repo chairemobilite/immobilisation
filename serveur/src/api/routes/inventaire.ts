@@ -67,7 +67,7 @@ export const creationRouteurInventaire = (pool: Pool): Router => {
     const calculInventairePythonQuartier: RequestHandler<ParamsQuartier> = async (req, res): Promise<void> => {
         console.log('entering calc inventory by neighborhood')
         const { id } = req.params;
-        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/src/calcul_par_quartier.py");
+        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/calcul_par_quartier.py");
         //debugger;
         // Chemin direct vers l'interpréteur Python dans l'environnement Conda
         const pythonExecutable = '/opt/conda/envs/serveur_calcul_python/bin/python3';
@@ -119,7 +119,7 @@ export const creationRouteurInventaire = (pool: Pool): Router => {
     const calculInventairePythonLot: RequestHandler<ParamsCadastre> = async (req, res): Promise<void> => {
         const { id } = req.params;
         const decipheredId = id.replace(/_/g, " ");
-        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/src/calcul_par_lot.py");
+        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/calcul_par_lot.py");
 
         // Chemin direct vers l'interpréteur Python dans l'environnement Conda
         const pythonExecutable = '/opt/conda/envs/serveur_calcul_python/bin/python3';
@@ -254,7 +254,7 @@ export const creationRouteurInventaire = (pool: Pool): Router => {
         }
     };
     const calculeInventaireValeursManuelles: RequestHandler<any, any, RequeteCalculeInventaireRegMan> = async (req, res, next): Promise<void> => {
-        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/src/calcul_entree_manuelle.py");
+        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/calcul_entree_manuelle.py");
 
         // Chemin direct vers l'interpréteur Python dans l'environnement Conda
         const pythonExecutable = '/opt/conda/envs/serveur_calcul_python/bin/python3';

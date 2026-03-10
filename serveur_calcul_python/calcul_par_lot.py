@@ -1,5 +1,5 @@
 import classes.parking_inventory as PI
-import calcs.inventory_calcs as IC
+import serveur_calcul_python.calcs.calcs_inventaire as IC
 import sys
 import os
 import config.config_db as cf_db

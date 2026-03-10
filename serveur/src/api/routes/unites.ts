@@ -19,7 +19,7 @@ export const CreationRouteurUnites = (pool: Pool): Router => {
         const { id } = req.params;
         const decipheredId = typeof id === 'string' ? id.replace(/_/g, " ") : id[0].replace(/_/g, " ");
         console.log(`obtention des unités pour les règlements s'appliquant au lot : ${decipheredId}`)
-        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/src/obtention_reglements_lot.py");
+        const scriptPath = path.resolve(__dirname, "../../../../serveur_calcul_python/obtention_reglements_lot.py");
 
         // Chemin direct vers l'interpréteur Python dans l'environnement Conda
         const pythonExecutable = '/opt/conda/envs/serveur_calcul_python/bin/python3';

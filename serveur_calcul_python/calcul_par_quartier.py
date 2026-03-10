@@ -1,4 +1,4 @@
-import calcs.inventory_calcs as IC
+import calcs.calcs_inventaire as IC
 import sys
 import json
 import psycopg2

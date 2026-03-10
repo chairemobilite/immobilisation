@@ -1,5 +1,5 @@
 import os
-import calcs.variability_analysis as VA
+import serveur_calcul_python.calcs.calcs_analyse_variabilite as VA
 import config.config_db as cf
 import sqlalchemy
 import debugpy

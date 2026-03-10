@@ -17,3 +17,4 @@ test.geojson
 /serveur_calcul_python/__pycache__
 /serveur_calcul_python/aggregation/__pycache__
 /serveur_calcul_python/tests/unit/__pycache__
+/serveur_calcul_python/.pytest_cache

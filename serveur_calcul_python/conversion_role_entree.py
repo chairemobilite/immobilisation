@@ -2,7 +2,7 @@ import classes.parking_inventory_inputs as PII
 import classes.parking_inventory as PI
 import classes.parking_reg_sets as PRS
 import classes.tax_dataset as TD
-import calcs.inventory_calcs as IC
+import serveur_calcul_python.calcs.calcs_inventaire as IC
 import pandas as pd
 import config.config_db as cfg
 from sqlalchemy import create_engine,Engine

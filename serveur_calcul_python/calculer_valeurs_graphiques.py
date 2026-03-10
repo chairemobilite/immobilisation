@@ -10,7 +10,7 @@ import config.config_db as cf_db
 import classes.parking_inventory_inputs as PII
 import classes.parking_regs as PR
 import classes.parking_reg_sets as PRS
-import calcs.inventory_calcs as IC
+import serveur_calcul_python.calcs.calcs_inventaire as IC
 
 def main():
     if os.getenv("DEBUGPY_CALC_ENABLE", "true").lower() == "true":
