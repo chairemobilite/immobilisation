@@ -165,7 +165,7 @@ def generate_input_from_PRS_TD(prs: PRS.ParkingRegulationSet,td:TD.TaxDataset, s
         #print(final_out)
         final_out[config_db.db_column_reg_sets_id] = int(prs.ruleset_id)
         final_out[config_db.db_column_parking_regs_id] = final_out[config_db.db_column_parking_regs_id].astype(int)
-        PCI_to_Out = ParkingCalculationInputs(final_out)
+        PCI_to_Out = PCI.ParkingCalculationInputs(final_out)
         return PCI_to_Out
     except Exception as e:
         print('caught error in conversion from tax dataset to relevant calculation input')
