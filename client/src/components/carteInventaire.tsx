@@ -134,7 +134,7 @@ const CarteInventaire: React.FC<CarteInventaireProps> = (props) => {
                     }
 
                     // Call the function to add the legend
-                    if (props.optionCouleur !== -1) {
+                    if (props.optionCouleur !== -1 && maxValue !== -Infinity && minValue !== Infinity) {
                         addLegendToMap(map, maxValue, minValue, colorScale);
                     }
                     // Check if inventaire has changed before adjusting bounds
