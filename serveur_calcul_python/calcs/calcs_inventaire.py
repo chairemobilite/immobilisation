@@ -11,6 +11,7 @@ from classes import parking_regs as PR
 from classes import reg_set_territory as RST
 from classes import parking_reg_sets as PRS
 from classes import tax_dataset as TD
+from calcs import calcs_conversion_unite as CCU
 from aggregation import agg_inventaire as IA
 
 
@@ -19,21 +20,24 @@ def calculate_inventory_by_analysis_sector(sector_to_calculate:int, create_html:
         # calculate_inventory_by_analysis_sector
         Permet de calculer le stationnement pour chaque lot danas un quartier d'analyse donné
     '''
-    # find all points within sector
-    logging.info('Getting tax data sets within neighbourhoods')
-    tax_data_to_analyse: TD.TaxDataset = TD.tax_database_for_analysis_territory(sector_to_calculate)
-    # find all territories that touch the data
-    logging.info('Finding relevant parking rulesets')
-    [RSTs,TDs] = RST.get_rst_by_tax_data(tax_data_to_analyse)
-    #creating  parking inventories
-    logging.info('Calculating parking inventory')
-    parking_inventories:list[PI.ParkingInventory] = calculate_parking_for_reg_set_territories(RSTs,TDs)
-    logging.info('Inventory completed - merging inventory list into one list')
-    final_parking_inventory = IA.dissolve_list(parking_inventories)
-    logging.info('Merging inventories for a given lot')
-    out = IA.merge_lot_data(final_parking_inventory)
-    
-    return out
+    try:
+        # find all points within sector
+        logging.info('Getting tax data sets within neighbourhoods')
+        tax_data_to_analyse: TD.TaxDataset = TD.tax_database_for_analysis_territory(sector_to_calculate)
+        # find all territories that touch the data
+        logging.info('Finding relevant parking rulesets')
+        [RSTs,TDs] = RST.get_rst_by_tax_data(tax_data_to_analyse)
+        #creating  parking inventories
+        logging.info('Calculating parking inventory')
+        parking_inventories:list[PI.ParkingInventory] = calculate_parking_for_reg_set_territories(RSTs,TDs)
+        logging.info('Inventory completed - merging inventory list into one list')
+        final_parking_inventory = IA.dissolve_list(parking_inventories)
+        logging.info('Merging inventories for a given lot')
+        out = IA.merge_lot_data(final_parking_inventory)
+        return out
+    except Exception as e:
+        logging.error(f'Error in inventory calculation for sector {sector_to_calculate} - error message: {e}\n')
+        raise
 
 def calculate_inventory_by_lot(lot_to_calculate:str, create_html:bool = False,overwrite:int=0)->PI.ParkingInventory:
     '''
@@ -66,7 +70,7 @@ def calculate_parking_for_reg_set_territories(reg_set_territories:Union[RST.RegS
         logger.info('-----------------------------------------------------------------------------------------------')
         logger.info(f'Starting inventory for regset territory: {reg_set_territories}')
         logger.info('-----------------------------------------------------------------------------------------------')
-        parking_calculation_input = PII.generate_input_from_PRS_TD(reg_set_territories.parking_regulation_set,tax_datas)
+        parking_calculation_input = CCU.generate_input_from_PRS_TD(reg_set_territories.parking_regulation_set,tax_datas)
         parking_inventory_to_return = calculate_inventory_from_inputs_class(parking_calculation_input,2)
         return parking_inventory_to_return
     parking_inventory_list = []
@@ -76,7 +80,7 @@ def calculate_parking_for_reg_set_territories(reg_set_territories:Union[RST.RegS
             logger.info(f'Starting inventory for regset territory: {sub_reg_set}')
             logger.info('-----------------------------------------------------------------------------------------------')
             # find unique parking regs and recursively call function with only one
-            parking_calculation_input = PII.generate_input_from_PRS_TD(sub_reg_set.parking_regulation_set,sub_tax_data)
+            parking_calculation_input = CCU.generate_input_from_PRS_TD(sub_reg_set.parking_regulation_set,sub_tax_data)
             parking_inventory_to_potentially_append = calculate_inventory_from_inputs_class(parking_calculation_input,2)
             parking_inventory_list.append(parking_inventory_to_potentially_append)
     return parking_inventory_list

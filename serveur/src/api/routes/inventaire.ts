@@ -110,7 +110,8 @@ export const creationRouteurInventaire = (pool: Pool): Router => {
                     return res.status(500).send('Erreur: JSON parsing failed.');
                 }
             } else {
-                console.error(`Processus enfant échoué avec le code : ${code}`);
+                console.error(`Processus enfant échoué avec le code : ${code}\n`);
+                console.error(`Error output: ${errorData}\n`);
                 return res.status(500).send(`Erreur: ${errorData}`);
             }
         });
@@ -163,6 +164,7 @@ export const creationRouteurInventaire = (pool: Pool): Router => {
                 }
             } else {
                 console.error(`Processus enfant échoué avec le code : ${code}`);
+                console.error(`Error output: ${errorData}`);
                 return res.status(500).send(`Erreur: ${errorData}`);
             }
         });
