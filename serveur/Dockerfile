@@ -22,9 +22,6 @@ RUN conda config --add channels conda-forge && \
     conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
     conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 
-
-COPY ../serveur_calcul_python/environment.yml .
-
 # ---- Create Conda env (cacheable) ----
 WORKDIR /app/serveur_calcul_python
 COPY serveur_calcul_python/environment.yml .
