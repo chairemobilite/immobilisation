@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:24
 WORKDIR /app
 COPY package*.json ./
 # Update npm to the latest version
