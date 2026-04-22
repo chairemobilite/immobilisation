@@ -1,6 +1,7 @@
 FROM node:24
 WORKDIR /app
-COPY package*.json ./
+COPY package.json ./
+COPY tsconfig.json ./
 # Update npm to the latest version
 RUN npm config set cache /app/.npm-cache --global
 RUN npm install -g npm@11.1.0
