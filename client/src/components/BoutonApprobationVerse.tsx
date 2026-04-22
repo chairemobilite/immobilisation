@@ -2,9 +2,6 @@ import { Button } from "@mui/material"
 import { FC } from "react"
 import { PropsBoutApprobVersement } from "../types/InterfaceTypes"
 import { EquivalenceCSVCoordPoint, EquivalenceVersementCarto } from "../types/DataTypes"
-import { ServiceEnqueteOD } from "../services/serviceEnqueteOD"
-import { u } from "react-router/dist/development/index-react-server-client-1TI9M9o1"
-
 
 const BoutonApprobationVerse:FC<PropsBoutApprobVersement>=(props:PropsBoutApprobVersement)=>{
     const handleFileInsert=async ()=>{
