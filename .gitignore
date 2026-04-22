@@ -12,3 +12,4 @@ test.geojson
 /.VSCodeCounter
 /docs/api/openapi-bundled.yaml
 /.vscode/chrome
+**/__pycache__
