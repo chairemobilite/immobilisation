@@ -1,11 +1,16 @@
-import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse,AxiosInstance } from 'axios';
 
-const api = axios.create({
-  baseURL:  `${process.env.REACT_APP_API_URL}/api` || 'http://localhost:5000/api', //
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+
+let api:AxiosInstance;
+
+  
+  api = axios.create({
+    baseURL:  process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/api` : 'http://localhost:5000/api', //
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    withCredentials: true,
+  });
 
 // Request interceptor with correct typing
 api.interceptors.request.use(
@@ -13,6 +18,7 @@ api.interceptors.request.use(
     console.log('Starting Request:', config.url);
     return config;
   }
+
 );
 
 // Response interceptor with correct typing

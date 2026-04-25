@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from "react-router";
-import { FournisseurContexte,utiliserContexte } from '../contexte/ContexteImmobilisation';
+import React from 'react';
+import { useNavigate } from "react-router";
+import { utiliserContexte } from '../contexte/ContexteImmobilisation';
 import { donneesCarteDeFond } from '../types/ContextTypes';
 import SubMenuComponent from './SubMenuComponent';
-import { latLng, LatLng } from 'leaflet';
+import { Logout, AccountBox } from '@mui/icons-material';
+import { authClient } from '../lib/auth-client';
+import { IconButton } from '@mui/material';
+
 const MenuBar: React.FC<{}> = () => {
 
+    const navigate = useNavigate();
     const contexte = utiliserContexte();
     const optionCartoChoisie = contexte?.optionCartoChoisie ?? "";
     const changerCarto = contexte?.changerCarto ?? (() => {});
@@ -52,6 +56,23 @@ const MenuBar: React.FC<{}> = () => {
                     {label:"Analyse agrégée quartiers",path:"/ana-quartiers"}
                 ]}
             />
+            <div className='gestionUtilsateur'>
+                <IconButton aria-label="Profil" onClick={()=>{navigate('/profil')}}>
+                    <AccountBox sx={{color:"white"}}/>
+                </IconButton>
+                <IconButton aria-label="Déconnexion" onClick={async()=>{
+                            try {
+                                await authClient.signOut();
+                                navigate('/login', { replace: true });
+                            } catch (error) {
+                                alert("Échec de déconnexion:"+error);
+                            }
+                        }
+                    }
+                >
+                    <Logout sx={{color:"white"}}/>
+                </IconButton>
+            </div>
             <div className="control-dds">
             {/*
             

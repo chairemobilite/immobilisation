@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict fnPA2LJ3JREVKErsN6JpEYNSz6ZhHh7FFNl7jqWYvQFlGT3cBadwdRYl4Wf1UAB
+\restrict qvCh0bXbDO4P4zsBquFpNdGtNoigIT4MM3Cu5EdWm8Pijcsn0oMf9PGrjF4AxqH
 
 -- Dumped from database version 16.11 (Ubuntu 16.11-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.11 (Ubuntu 16.11-0ubuntu0.24.04.1)
@@ -80,6 +80,27 @@ $$;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: account; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.account (
+    id text NOT NULL,
+    "accountId" text NOT NULL,
+    "providerId" text NOT NULL,
+    "userId" text NOT NULL,
+    "accessToken" text,
+    "refreshToken" text,
+    "idToken" text,
+    "accessTokenExpiresAt" timestamp with time zone,
+    "refreshTokenExpiresAt" timestamp with time zone,
+    scope text,
+    password text,
+    "createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL
+);
+
 
 --
 -- Name: assignation_strates; Type: TABLE; Schema: public; Owner: -
@@ -1077,6 +1098,22 @@ CREATE TABLE public.role_foncier (
 
 
 --
+-- Name: session; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.session (
+    id text NOT NULL,
+    "expiresAt" timestamp with time zone NOT NULL,
+    token text NOT NULL,
+    "createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL,
+    "ipAddress" text,
+    "userAgent" text,
+    "userId" text NOT NULL
+);
+
+
+--
 -- Name: stat_corr_pub_res; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -1225,6 +1262,21 @@ CREATE VIEW public.taux_occupation_res_max AS
    FROM ((public.sec_analyse sa
      LEFT JOIN max_pav_res mpr ON ((mpr.id_quartier = sa.id_quartier)))
      LEFT JOIN stationnement_public stpu ON ((stpu.id_quartier = sa.id_quartier)));
+
+
+--
+-- Name: user; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public."user" (
+    id text NOT NULL,
+    name text NOT NULL,
+    email text NOT NULL,
+    "emailVerified" boolean NOT NULL,
+    image text,
+    "createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
 
 
 --
@@ -1426,6 +1478,15 @@ ALTER TABLE ONLY public.strates_echantillonage ALTER COLUMN id_strate SET DEFAUL
 
 
 --
+
+-- Name: account account_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.account
+    ADD CONSTRAINT account_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: association_cadastre_role association_cadastre_role_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1578,6 +1639,37 @@ ALTER TABLE ONLY public.strates_echantillonage
 
 
 --
+-- Name: user user_email_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."user"
+    ADD CONSTRAINT user_email_key UNIQUE (email);
+
+
+--
+-- Name: user user_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public."user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: verification verification_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.verification
+    ADD CONSTRAINT verification_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: account_userId_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "account_userId_idx" ON public.account USING btree ("userId");
+
+
+--
 -- Name: idx_cadastre_geom; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1670,5 +1762,6 @@ CREATE OR REPLACE VIEW public.dens_stat_reg_quartier AS
 -- PostgreSQL database dump complete
 --
 
-\unrestrict fnPA2LJ3JREVKErsN6JpEYNSz6ZhHh7FFNl7jqWYvQFlGT3cBadwdRYl4Wf1UAB
+\unrestrict qvCh0bXbDO4P4zsBquFpNdGtNoigIT4MM3Cu5EdWm8Pijcsn0oMf9PGrjF4AxqH
+
 

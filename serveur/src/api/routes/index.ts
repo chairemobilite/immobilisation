@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router,Application } from 'express';
 import { Pool } from 'pg';
 import { creationRouteurQuartiersAnalyse } from './secteursAnalyse';
 import { creationRouteurHistorique } from './historique';
@@ -21,8 +21,10 @@ import { creationRouteurRecensement } from './recensement';
 import { creationRouteurEnqueteOD } from './enqueteOD';
 import { creationRouteurDonneesCSV } from './fichiersCSV';
 import { CreationRouteurSommaireDonnee } from './sommaireVersement';
+import adminRoutes from './admin';
 
-export const createApiRouter = (pool: Pool) => {
+
+export const createApiRouter = (pool: Pool,app: Application) => {
     const router = Router();
     console.log('going through router test')
     router.use('/quartiers-analyse', creationRouteurQuartiersAnalyse(pool));
@@ -46,5 +48,6 @@ export const createApiRouter = (pool: Pool) => {
     router.use('/enquete-od',creationRouteurEnqueteOD(pool))
     router.use('/fichier-csv',creationRouteurDonneesCSV(pool))
     router.use('/sommaire-donnees',CreationRouteurSommaireDonnee(pool))
+    router.use('/routes',adminRoutes(app))
     return router;
 }
