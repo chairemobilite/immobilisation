@@ -2,10 +2,11 @@
 -- PostgreSQL database dump
 --
 
-\restrict qvCh0bXbDO4P4zsBquFpNdGtNoigIT4MM3Cu5EdWm8Pijcsn0oMf9PGrjF4AxqH
 
--- Dumped from database version 16.11 (Ubuntu 16.11-0ubuntu0.24.04.1)
--- Dumped by pg_dump version 16.11 (Ubuntu 16.11-0ubuntu0.24.04.1)
+\restrict cTmcSvhn40EtSiBW47u5ZgxAD5QVlOPqSWjtlTZtP0WxW9Fl9vmkVouRc8fW0kA
+
+-- Dumped from database version 16.13 (Ubuntu 16.13-0ubuntu0.24.04.1)
+-- Dumped by pg_dump version 16.13 (Ubuntu 16.13-0ubuntu0.24.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -99,6 +100,36 @@ CREATE TABLE public.account (
     password text,
     "createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updatedAt" timestamp with time zone NOT NULL
+);
+
+
+--
+-- Name: apikey; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.apikey (
+    id text NOT NULL,
+    "configId" text NOT NULL,
+    name text,
+    start text,
+    "referenceId" text NOT NULL,
+    prefix text,
+    key text NOT NULL,
+    "refillInterval" integer,
+    "refillAmount" integer,
+    "lastRefillAt" timestamp with time zone,
+    enabled boolean,
+    "rateLimitEnabled" boolean,
+    "rateLimitTimeWindow" integer,
+    "rateLimitMax" integer,
+    "requestCount" integer,
+    remaining integer,
+    "lastRequest" timestamp with time zone,
+    "expiresAt" timestamp with time zone,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL,
+    permissions text,
+    metadata text
 );
 
 
@@ -1109,7 +1140,8 @@ CREATE TABLE public.session (
     "updatedAt" timestamp with time zone NOT NULL,
     "ipAddress" text,
     "userAgent" text,
-    "userId" text NOT NULL
+    "userId" text NOT NULL,
+    "impersonatedBy" text
 );
 
 
@@ -1275,7 +1307,11 @@ CREATE TABLE public."user" (
     "emailVerified" boolean NOT NULL,
     image text,
     "createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    role text,
+    banned boolean,
+    "banReason" text,
+    "banExpires" timestamp with time zone
 );
 
 
@@ -1290,6 +1326,20 @@ CREATE TABLE public.variabilite (
     n_places_min double precision,
     id_er bigint,
     facteur_echelle double precision
+);
+
+
+--
+-- Name: verification; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.verification (
+    id text NOT NULL,
+    identifier text NOT NULL,
+    value text NOT NULL,
+    "expiresAt" timestamp with time zone NOT NULL,
+    "createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1478,12 +1528,19 @@ ALTER TABLE ONLY public.strates_echantillonage ALTER COLUMN id_strate SET DEFAUL
 
 
 --
-
 -- Name: account account_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.account
     ADD CONSTRAINT account_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: apikey apikey_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.apikey
+    ADD CONSTRAINT apikey_pkey PRIMARY KEY (id);
 
 
 --
@@ -1631,6 +1688,22 @@ ALTER TABLE ONLY public.sec_analyse
 
 
 --
+-- Name: session session_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.session
+    ADD CONSTRAINT session_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: session session_token_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.session
+    ADD CONSTRAINT session_token_key UNIQUE (token);
+
+
+--
 -- Name: strates_echantillonage strates_echantillonage_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1667,6 +1740,27 @@ ALTER TABLE ONLY public.verification
 --
 
 CREATE INDEX "account_userId_idx" ON public.account USING btree ("userId");
+
+
+--
+-- Name: apikey_configId_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "apikey_configId_idx" ON public.apikey USING btree ("configId");
+
+
+--
+-- Name: apikey_key_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX apikey_key_idx ON public.apikey USING btree (key);
+
+
+--
+-- Name: apikey_referenceId_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "apikey_referenceId_idx" ON public.apikey USING btree ("referenceId");
 
 
 --
@@ -1747,6 +1841,20 @@ CREATE INDEX ix_variabilite_index ON public.variabilite USING btree (index);
 
 
 --
+-- Name: session_userId_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "session_userId_idx" ON public.session USING btree ("userId");
+
+
+--
+-- Name: verification_identifier_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX verification_identifier_idx ON public.verification USING btree (identifier);
+
+
+--
 -- Name: dens_stat_reg_quartier _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1759,9 +1867,24 @@ CREATE OR REPLACE VIEW public.dens_stat_reg_quartier AS
 
 
 --
+-- Name: account account_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.account
+    ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."user"(id) ON DELETE CASCADE;
+
+
+--
+-- Name: session session_userId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.session
+    ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES public."user"(id) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict qvCh0bXbDO4P4zsBquFpNdGtNoigIT4MM3Cu5EdWm8Pijcsn0oMf9PGrjF4AxqH
-
+\unrestrict cTmcSvhn40EtSiBW47u5ZgxAD5QVlOPqSWjtlTZtP0WxW9Fl9vmkVouRc8fW0kA
 

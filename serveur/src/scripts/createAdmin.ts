@@ -2,7 +2,7 @@ import { auth } from "../lib/auth";
 import { pool } from '../lib/poolCreate';
 // Database connection
 
-async function createFirstUser() {
+async function createFirstAdmin() {
     // Parse arguments: node script.js --email="test@example.com" --password="securePass"
     const args = process.argv.slice(2);
     const emailArg = args.find(a => a.startsWith('--email='));
@@ -10,7 +10,7 @@ async function createFirstUser() {
     const nameArg = args.find(a => a.startsWith('--name='));
 
     if (!emailArg || !passArg) {
-        console.error("Usage: node script.js --email=user@test.com --password=securePass [--name='User Name']");
+        console.error("Usage: node createFirstAdmin.ts --email=user@test.com --password=securePass [--name='User Name']");
         process.exit(1);
     }
 
@@ -21,13 +21,12 @@ async function createFirstUser() {
     console.log("🔐 Creating user via CLI arguments...");
     try {
         const res = await auth.api.createUser({
-            body: {
-                email: email,
-                password: password,
-                name: name,
-                role: 'user'
-            }
-        });
+        body:{
+            email:email,
+            password: password,
+            name:name,
+            role:'admin'
+        }})
         console.log("✅ Success:", res);
     } catch (error) {
         console.error("❌ Failed:", error);
@@ -38,5 +37,5 @@ async function createFirstUser() {
 }
 
 if (require.main === module) {
-  createFirstUser();
+    createFirstAdmin();
 }
