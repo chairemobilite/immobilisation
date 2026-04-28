@@ -1,4 +1,4 @@
-import express ,{Application}from 'express';
+import express ,{Application,Request, Response}from 'express';
 import { Pool } from 'pg';
 import cors from 'cors';
 import { createApiRouter } from './api/routes';
@@ -94,7 +94,7 @@ function extractMountPath(layer: any): string {
 }
 
 
-app.get('/api/routes', (req, res) => {
+app.get('/api/routes', (req:Request, res:Response) => {
   const allRoutes = extractRoutes(app);
   res.json(allRoutes);
 });

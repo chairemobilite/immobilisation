@@ -15,7 +15,7 @@ export const creationRouteurQuartiersAnalyse = (pool: Pool): Router => {
         console.log('Serveur - obtentions tous quartiers analyse')
         let client;
         try {
-            const { geometry } = _req.body as GeometryBody;
+
             client = await pool.connect();
             const query = `
         SELECT 

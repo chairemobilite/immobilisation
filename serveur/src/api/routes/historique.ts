@@ -15,7 +15,7 @@ export const creationRouteurHistorique = (pool: Pool): Router => {
     console.log('Serveur - Obtention toutes periodes')
     let client;
     try {
-      const { geometry } = _req.body as GeometryBody;
+
       client = await pool.connect();
       const query = `
         SELECT *
