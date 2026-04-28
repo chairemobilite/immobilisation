@@ -1,10 +1,8 @@
 /client/node_modules
 .env
 /serveur/node_modules
-/client/package-lock.json
 /client/.npm-cache
 /serveur/dist
-/serveur/package-lock.json
 /serveur_calcul_python/classes/__pycache__
 /serveur_calcul_python/config/__pycache__
 /serveur_calcul_python/utilitaires/__pycache__

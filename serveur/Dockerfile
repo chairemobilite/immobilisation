@@ -29,8 +29,8 @@ RUN --mount=type=cache,target=/opt/conda/pkgs \
     conda env create -f environment.yml
 #  ----------- Instann node stuff -------------
 WORKDIR /app/serveur
-COPY serveur/package*.json ./
-RUN npm install -g npm@11.0.0
+COPY serveur/package.json serveur/package-lock.json ./
+RUN npm install -g npm@11.12.1
 RUN npm install
 
 COPY serveur/tsconfig.json ./
