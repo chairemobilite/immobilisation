@@ -8,7 +8,7 @@ services:
     depends_on:
       - serveur
     environment:
-      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_API_URL=${BACKEND_URL:-http://localhost:5000}
       - WATCHPACK_POLLING=true  # Enable polling for Windows compatibility
       - CHOKIDAR_USEPOLLING=true  # Enable polling for hot reload
       - FAST_REFRESH=true
@@ -37,6 +37,9 @@ services:
       - CHOKIDAR_USEPOLLING=true  
       - NODE_ENV=development
       - DEBUGPY_CALC_ENABLE=false
+      - TRUSTED_FRONTEND=${FRONTEND_URL:-http://localhost:3000}
+      - BACKEND_URL=${BACKEND_URL:-http://localhost:5000}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
     networks:
       - app-network
     volumes:
