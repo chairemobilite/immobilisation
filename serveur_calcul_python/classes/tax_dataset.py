@@ -97,7 +97,7 @@ class TaxDataset():
         ## Outputs
             - TaxDataSet"""
         if start_year is None and end_year is None:
-            new_tax_table=self.tax_table
+            new_tax_table=self.tax_table.copy()
         elif start_year is None:
             new_tax_table:gpd.GeoDataFrame = self.tax_table.loc[((self.tax_table[config_db.db_column_tax_constr_year]<= end_year))]
         elif end_year is None:

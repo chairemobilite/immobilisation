@@ -223,10 +223,24 @@ def generate_input_from_PRS_TD(prs: PRS.ParkingRegulationSet,td:TD.TaxDataset, s
         conversion_factors_merge[config_db.db_column_converted_value] = conversion_factors_merge.apply(compute_valeur,
             axis=1
         )
-        conversion_factors_merge_out_start = conversion_factors_merge[[config_db.db_column_lot_id,config_db.db_column_parking_regs_id,config_db.db_column_parking_unit_id,config_db.db_column_land_use_id,config_db.db_column_converted_value]]
+        conversion_factors_merge_out_start = conversion_factors_merge[
+            [
+                config_db.db_column_lot_id,
+                config_db.db_column_parking_regs_id,
+                config_db.db_column_parking_unit_id,
+                config_db.db_column_land_use_id,
+                config_db.db_column_converted_value
+            ]
+        ]
         final_out = conversion_factors_merge_out_start.groupby(
-            [config_db.db_column_lot_id, config_db.db_column_parking_regs_id, config_db.db_column_parking_unit_id, config_db.db_column_land_use_id]
-        ).agg({config_db.db_column_converted_value: 'sum'}).reset_index()
+                [
+                    config_db.db_column_lot_id, 
+                    config_db.db_column_parking_regs_id, 
+                    config_db.db_column_parking_unit_id, 
+                    config_db.db_column_land_use_id
+                ]).agg({
+                    config_db.db_column_converted_value: lambda s: s.sum(min_count=1)
+                    }).reset_index()
         #duplicates_for_fun = final_out.groupby(config_db.db_column_lot_id).agg(count=(config_db.db_column_lot_id, 'count')).reset_index()
         #duplicates_for_fun = duplicates_for_fun.loc[duplicates_for_fun['count']>1,config_db.db_column_lot_id].to_list()
         #complex_outs = final_out.loc[final_out[config_db.db_column_lot_id].isin(duplicates_for_fun)]

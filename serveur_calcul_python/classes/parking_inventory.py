@@ -104,7 +104,7 @@ class ParkingInventory():
         lots_list_to_purge_from_self = lots_to_clean_up[config_db.db_column_lot_id].unique().tolist()
         if len(lots_list_to_purge_from_self)>0:
 
-            aggregate_parking_data = lots_to_clean_up.groupby([config_db.db_column_lot_id]).apply(inventory_duplicates_agg_function, include_groups=True).reset_index()
+            aggregate_parking_data = lots_to_clean_up.groupby([config_db.db_column_lot_id]).apply(inventory_duplicates_agg_function, include_groups=False).reset_index()
             aggregate_parking_data.loc[(
                 aggregate_parking_data[config_db.db_column_supply_min]>aggregate_parking_data[config_db.db_column_supply_max]) |
                 (aggregate_parking_data[config_db.db_column_supply_max]==0.0),
@@ -356,7 +356,14 @@ def inventory_duplicates_agg_function(x:pd.DataFrame):
     d[config_db.db_column_reg_sets_id] = '/'.join(map(str, x[config_db.db_column_reg_sets_id]))
     d[config_db.db_column_parking_regs_id] = '/'.join(map(str, x[config_db.db_column_parking_regs_id]))
     d[config_db.db_column_supply_min] = x[config_db.db_column_supply_min].sum()
-    d[config_db.db_column_supply_max] = x[config_db.db_column_supply_max].sum()
+    """
+        Min count is added to ensure that max is specified only if all the land uses have a specified max
+        This makes sense given that it's unlikely this rule would really be applied in any case given
+        that if there are multiple land uses with different rules but only one has a maximum hard to
+        see how that would apply. only keep max if all land use have a max
+        Note that maxes are generally pretty uncommon so not too worried about this but it makes sense
+    """
+    d[config_db.db_column_supply_max] = x[config_db.db_column_supply_max].sum(min_count=len(x)) 
     d[config_db.db_column_supply_comment] = ', '.join(map(str, x[config_db.db_column_supply_comment]))
     d[config_db.db_column_supply_est_meth] = x[config_db.db_column_supply_est_meth].values[0]
     return pd.Series(d,index = [
@@ -543,6 +550,8 @@ def calculate_parking_for_reg_set_territories(
                         2
                     )
                 parking_inventory_list.append(parking_inventory_to_potentially_append)
+        if not parking_inventory_list:
+            raise ValueError('No valid inventory objects were found for the given lot or neighbourhood')    
         return parking_inventory_list
 
 def calculate_parking_specific_reg_set( reg_set:PRS.ParkingRegulationSet,tax_data:TD.TaxDataset,scale:float=None)->PI.ParkingInventory:
@@ -615,7 +624,7 @@ def calculate_inventory_from_inputs_class(donnees_calcul:PII.ParkingCalculationI
         reglement:PR.ParkingRegulations = reglements.get_reg_by_id(int(id_reglement))
         unites = reglement.get_units()
         unites_donnees:list[int] = donnees_pertinentes.loc[donnees_pertinentes[config_db.db_column_parking_regs_id]==id_reglement,config_db.db_column_parking_unit_id].unique().tolist()
-        if unites.sort()==unites_donnees.sort():
+        if sorted(unites)==sorted(unites_donnees):
             parking_last = calculate_parking_specific_reg_from_inputs_class(reglement,donnees_pertinentes,methode_estime)
             parking_out.append(parking_last)
     parking_final = dissolve_list(parking_out)
@@ -664,20 +673,22 @@ def calculate_parking_subset_from_inputs_class(reg_to_calculate:PR.ParkingRegula
         - parking_inventory: a parking supply estimate for the chosen subset
     """
     if reg_to_calculate.check_only_one_regulation():
-        match reg_to_calculate.get_subset_intra_operation_type(subset):
+        match int(reg_to_calculate.get_subset_intra_operation_type(subset)):
             case 1:
                 inventory = calculate_addition_based_subset_from_inputs_class(reg_to_calculate,subset,relevant_inputs,methode_estime)
                 #NotImplementedError('Not yet Implemented')
             case 2:
-                AttributeError('Operation 2  deprecated and no longer in use. Use operator 4 instead')
+                raise AttributeError('Operation 2  deprecated and no longer in use. Use operator 4 instead')
             case 3:
-                AttributeError('Operation 3 not supported within one subset')
+                raise AttributeError('Operation 3 not supported within one subset')
             case 4:
                 inventory = calculate_threshold_based_subset_from_inputs_class(reg_to_calculate,subset,relevant_inputs,methode_estime)
             case 5:
-                AttributeError('Operation 5 not supported within one subset')
+                raise AttributeError('Operation 5 not supported within one subset')
             case 6:
-                AttributeError('Operation 6 not supported within one subset')
+                raise AttributeError('Operation 6 not supported within one subset')
+            case _:
+                raise AttributeError('No operation recognized')
         return inventory
     else:
         raise ValueError('Can only calculate one rule at a time')
@@ -750,6 +761,7 @@ def calculate_threshold_based_subset_from_inputs_class(reg_to_calculate:PR.Parki
                     else: 
                         parking_frame_thresh[config_db.db_column_supply_max] = None
 
+
                     parking_frame_thresh.loc[parking_frame_thresh[config_db.db_column_supply_max]<parking_frame_thresh[config_db.db_column_supply_min],config_db.db_column_supply_max]=None
                     parking_frame_thresh[config_db.db_column_supply_meas] = None
                     parking_frame_thresh[config_db.db_column_supply_estimated] = None
@@ -797,8 +809,9 @@ def calculate_addition_based_subset_from_inputs_class(reg_to_calculate:PR.Parkin
         - Reduce the complexity of the function by combining if statements
         - Ensure that the concatenation of the input are done properly.
     """
+
     if reg_to_calculate.check_subset_exists(subset) and reg_to_calculate.check_only_one_regulation():
-        operator = reg_to_calculate.get_subset_intra_operation_type(subset)
+        operator = int(reg_to_calculate.get_subset_intra_operation_type(subset))
         if operator==1:
             subset_def = reg_to_calculate.get_subset_def(subset)
             relevant_data = data.get_by_reg(reg_to_calculate.get_reg_id())
@@ -806,8 +819,7 @@ def calculate_addition_based_subset_from_inputs_class(reg_to_calculate:PR.Parkin
 
             if relevant_data.check_units_present(reg_units):
                 inventory = pd.DataFrame(relevant_data.loc[relevant_data[config_db.db_column_parking_unit_id].isin(reg_units)].merge(subset_def,on=[config_db.db_column_parking_regs_id,config_db.db_column_parking_unit_id],how='left'))
-                
-                # Create a mask for rows where both conditions are not None
+                # Create a mask for rows where both slope and intercept are not None for min and max
                 mask_both_min_not_none = (
                     inventory[config_db.db_column_parking_zero_crossing_min].notna() & 
                     inventory[config_db.db_column_parking_slope_min].notna()
@@ -816,7 +828,8 @@ def calculate_addition_based_subset_from_inputs_class(reg_to_calculate:PR.Parkin
                     inventory[config_db.db_column_parking_zero_crossing_max].notna() & 
                     inventory[config_db.db_column_parking_slope_max].notna()
                 )
-                # Create a mask for rows where both conditions are not None
+                # Create a mask for rows where zero crossing is not None. This means the 
+                # max or the min are fixed values rather than a linear relation
                 mask_crossing_min_not_none = (
                     inventory[config_db.db_column_parking_zero_crossing_min].notna()& 
                     inventory[config_db.db_column_parking_slope_min].isna()
@@ -825,7 +838,8 @@ def calculate_addition_based_subset_from_inputs_class(reg_to_calculate:PR.Parkin
                     inventory[config_db.db_column_parking_zero_crossing_max].notna()& 
                     inventory[config_db.db_column_parking_slope_max].isna()
                 )
-
+                # Create mask for rows where both the slope and intercept are none meaning that the min or the max are not defined. 
+                # typically this is the case for maxes which are only defined in more recent regulations.  
                 mask_both_min_none = (
                     inventory[config_db.db_column_parking_zero_crossing_min].isna()& 
                     inventory[config_db.db_column_parking_slope_min].isna()
@@ -919,7 +933,9 @@ def calculate_addition_based_subset_from_inputs_class(reg_to_calculate:PR.Parkin
                 inventory_out[config_db.db_column_supply_estimated] = np.nan
                 return ParkingInventory(inventory_out)
             else:
-                ValueError('You need to provide all relevant units for a regulation')
+                raise ValueError('You need to provide all relevant units for a regulation')
+        else:
+            raise ValueError('Incorrect operator for this function: expected addition (1)')
 
 def get_lot_data_by_estimation(lot_ids:list[str],estimation_method:int,con:Engine=None)->ParkingInventory:
     """
