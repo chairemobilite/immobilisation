@@ -5,17 +5,21 @@ channels:
 dependencies:
   - python=3.12
   - numpy
-  - pandas
-  - geopandas
-  - typing
+  - debugpy
   - scikit-image
+  - sqlalchemy
+  - pandas
   - lxml
   - openpyxl
   - psycopg2
-  - sqlalchemy
-  - geoalchemy2
-  - xlrd
   - git
-  - typing-extensions
+  - geopandas
+  - typing
+  - xlrd
   - matplotlib
-  - debugpy
+  - geoalchemy2
+  - typing-extensions
+  - pytest
+  - coverage
+  - gdal
+  - fiona
