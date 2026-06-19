@@ -1,0 +1,29 @@
+name: Check parking prediction calculations
+permissions:
+  contents: read
+on: 
+  pull_request:
+    branches:
+      - main
+  push:
+    branches: 
+      - main
+jobs:
+  engine-test:
+    runs-on: ubuntu-latest
+    defaults:
+        run:
+          shell: bash -el {0} # conda requires bash to function
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup conda environment
+        uses: conda-incubator/setup-miniconda@v4
+        with:
+          activate-environment: serveur_calcul_python
+          environment-file: serveur_calcul_python/environment.yml
+          auto-activate: true
+      - name: Test conda installation
+        run: conda info
+      - name: Run tests
+        run: | 
+          pytest serveur_calcul_python
