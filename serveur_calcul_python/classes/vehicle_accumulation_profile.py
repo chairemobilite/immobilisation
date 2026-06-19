@@ -426,7 +426,7 @@ def create_geometry_columns(raw_od)->gpd.GeoDataFrame:
 
 def get_data_for_sector_from_database(quartier:int,engine:sqlalchemy.Engine)->VehicleAccumulationProfile:
     if (quartier ==0):
-        query = f'''WITH all_territories AS (
+        query = f"""WITH all_territories AS (
                     SELECT
                         id_quartier,
                         geometry
@@ -449,16 +449,16 @@ def get_data_for_sector_from_database(quartier:int,engine:sqlalchemy.Engine)->Ve
                 FROM 
                     od_data AS odd
                 JOIN 
-                    matching_nologs USING (nolog);'''
-        query_territory = '''
+                    matching_nologs USING (nolog);"""
+        query_territory = """
                 SELECT
                 0 as id_quartier,
                 ST_Union(geometry) as geometry
                 FROM
                 public.sec_analyse
-            '''
+            """
     else :
-        query = f'''WITH quartier AS (
+        query = f"""WITH quartier AS (
                     SELECT
                         id_quartier,
                         geometry
@@ -483,14 +483,14 @@ def get_data_for_sector_from_database(quartier:int,engine:sqlalchemy.Engine)->Ve
                 FROM 
                     od_data AS odd
                 JOIN 
-                    matching_nologs USING (nolog);'''
-        query_territory = f'''SELECT
+                    matching_nologs USING (nolog);"""
+        query_territory = f"""SELECT
                         id_quartier,
                         geometry
                     FROM
                         public.sec_analyse
                     WHERE
-                        id_quartier = {quartier}'''
+                        id_quartier = {quartier}"""
     with engine.connect() as conn:
         data_od_survey = gpd.read_postgis(query,geom_col='geom_logis',con=conn)
         data_territory = gpd.read_postgis(query_territory,geom_col='geometry',con=conn)

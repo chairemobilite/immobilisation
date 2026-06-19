@@ -1,5 +1,14 @@
-import classes.parking_reg_sets as PRS
-import classes.parking_regs as PR
+"""
+Copyright (c) 2026 Paul Charbonneau
+
+Licensed under the MIT License.
+See the LICENSE file in the project root for license information.
+
+Entry point to get the required units for the regulations which are
+specified by the user. He then has to opt out of parking regulations
+which contain multiple units
+"""
+
 import os
 import debugpy
 import sys
@@ -8,7 +17,8 @@ import config.config_db as cf_db
 from psycopg2 import OperationalError
 import time
 import json
-import pandas as pd
+import utilitaires.frontend_chart_data_processing as FCDP
+
 if __name__=="__main__":
     #print(sys.argv)
     try:
@@ -27,24 +37,8 @@ if __name__=="__main__":
 
         # Deserialize the JSON data to a Python list of dictionaries
         array = json.loads(data)
-        array_entry = array[0]
-        land_use_id = array_entry['cubf']
-        prs_ids = array_entry['id_er']
-        #breakpoint()
-        reg_sets = PRS.from_sql(prs_ids)
-        reg_set_list =[]
-        reg_list = []
-        unit_list = []
-        for reg_set in reg_sets:
-            reg_id = reg_set.get_unique_reg_ids_using_land_use([land_use_id])
-            reg_out:PR.ParkingRegulations = reg_set.get_reg_by_id(reg_id)
-            unit_out = reg_out.get_units()
-            reg_set_list.append(reg_set.ruleset_id)
-            reg_list.append(reg_out.get_reg_id())
-            unit_list.append(unit_out)
-        dict_out = {'id_er':reg_set_list,'id_reg_stat':reg_list,'unite':unit_list}
-        df_out = pd.DataFrame(dict_out)
-        json_out = df_out.to_json(orient='records',force_ascii=False)
+        df_out = FCDP.obtain_parking_regulations_info_for_graph(array)
+        json_out = df_out.to_json(orient='records',force_ascii=False) 
         print(json_out)
         #breakpoint()
     except OperationalError as e:

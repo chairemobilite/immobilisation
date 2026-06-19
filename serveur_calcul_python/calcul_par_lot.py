@@ -1,3 +1,13 @@
+"""
+Copyright (c) 2026 Paul Charbonneau
+
+Licensed under the MIT License.
+See the LICENSE file in the project root for license information.
+
+Entry point to calculate parking for a particular lot (rather than a 
+neighbourhood)
+"""
+
 import classes.parking_inventory as PI
 import sys
 import os

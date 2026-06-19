@@ -26,7 +26,7 @@ logger.propagate = False
 
 
 def ouverture_role_xml(path_xml,usage_code_column_name_xml,dictionnaire_renommer,**kwargs):
-    '''ouverture_role_xml ouvre le xml du role foncier, renomme les colonnes pour rendre le code plus lisible et joint les utilisations du territoire à la base de donnée
+    """ouverture_role_xml ouvre le xml du role foncier, renomme les colonnes pour rendre le code plus lisible et joint les utilisations du territoire à la base de donnée
             Input:
                 - path_xml: chemin du xml du role foncier pour la ville à analyser
                 - usage_code_column_name_xml: colonne indicant l'usage prédominant(utiliser la version renommée)
@@ -37,7 +37,7 @@ def ouverture_role_xml(path_xml,usage_code_column_name_xml,dictionnaire_renommer
                 - approx_usage_code_divisor: utiliser ceci pour réduire le degré de nuance des utilisations du territoire
             output:
                 - tax_database_XML: jeux de données xml sous forme de dataframe
-    '''
+    """
     usage_spec_path = kwargs.get("usage_spec_loc",None)
     usage_spec_code_column_name = kwargs.get("usage_spec_code_column_name",None)
     approx_usage_code_divisor = kwargs.get("code_simplification_divisor",None)

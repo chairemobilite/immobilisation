@@ -1,9 +1,21 @@
+"""
+Copyright (c) 2026 Paul Charbonneau
+
+Licensed under the MIT License.
+See the LICENSE file in the project root for license information.
+
+Regulation Set Territories are the icing on an abstraction mille feuilles. They associate
+parking regulation sets(what rules are associated to what land use) and associate them
+to a territory which itself is part of an era where geopolitical limits were stable. This 
+could be used to represent zones of a zoning code although this has not yet been attempted
+"""
+
 import numpy as np
 import geopandas as gpd
 import pandas as pd
-from typing import Optional, Union
+from typing import Optional, Union,Tuple
 from datetime import datetime
-from sqlalchemy import create_engine,text
+from sqlalchemy import create_engine,text,Engine
 from config import config_db
 from classes import parking_reg_sets as PRS
 from classes import tax_dataset as TD
@@ -13,15 +25,18 @@ from folium import Map
 import logging
 
 class RegSetTerritory():
-    '''
+    """
         # reg_set_territory 
          This is an object that represents the combination of a territory and a ruleset
          ## Attributes:
-            Territory: GeoSeries representing the territory of a municipality, the end and start date of it's existence
+            Assoc_id: Identifier of the association which matches the regulationSet to the territory
+            Territory: GeoDataFrame of length 1 representing the territory of a municipality, the end and start date of it's existence
             ruleset: a ParkingRegulationSet as defined in the classes document See that file for more details
+            start_year: a year where the association starts based on the validity period of the territory or the reg_set
+            end_year: a year where the association ends based on the validity of the territory or the reg_set
          ## Methods:
 
-    '''
+    """
     def __init__(self, territory: gpd.GeoSeries, parking_regulation_set:PRS.ParkingRegulationSet,period_start_year:int,period_end_year:int,assoc_id:int):
         self.assoc_id = assoc_id
         self.territory_info = territory
@@ -39,13 +54,13 @@ class RegSetTerritory():
         return return_string
 
 def get_postgis_rst_by_terr_id(territory_id:Union[int,list[int]])->list[RegSetTerritory]:
-    '''# get_postgis_rst_by_terr_id
+    """# get_postgis_rst_by_terr_id
     Function return a list of RegSetTerritory objects which represent the combination of a municipal territory, a time span and a regulation set that applies to the properties in the zone built in the time period. 
     ## Inputs
         - territory_id:int or list of ints that indicate the territory ids to query for data
     ## Outputs:
         - list of RegSetTerritory: RegSetTerritory(combination of a territory, validity dates based on either ruleset or validity of territory) which identifies geographic boundaries, and relevant parking rules for a given time span.
-    '''
+    """
     # build queries for association table and territory table where the input territories are included
     if isinstance(territory_id,int):
         query_assoc = f'SELECT * FROM public.{config_db.db_table_match_regsets_territory} WHERE {config_db.db_column_territory_id} = {territory_id}'
@@ -99,7 +114,22 @@ def get_postgis_rst_by_terr_id(territory_id:Union[int,list[int]])->list[RegSetTe
             RST_list_to_return.append(RST_to_append)
     return RST_list_to_return  
 
-def get_rst_by_tax_data(tax_data:TD.TaxDataset,db_eng=None)->list[list[RegSetTerritory],list[TD.TaxDataset]]:
+def get_rst_by_tax_data(tax_data:TD.TaxDataset,db_eng:Engine=None)->Tuple[list[RegSetTerritory],list[TD.TaxDataset]]:
+    """
+    # get_rst_by_tax_data
+    Returns the RegSetTerritories which intersect with the tax data which is provided. This function queries 
+    the database to obtain this data
+
+    Inputs:
+        - tax_data: a TaxDataset from which you want to obtain the relevant RegSetTerritories
+        - db_eng: the sqlalchemy Engine to use for retriebing the data
+
+    Outputs:
+        A tuple containing two lists of equal length
+            - first lsit contains the regulation set territories retrieved
+            - second list contains the tax data set which was initally pvoded split based on which 
+            RegSetTerritory should apply to it
+    """
     if db_eng is None:
         db_eng = create_engine(config_db.pg_string)
     # trouver les id provinciaux uniques à aller chercher
@@ -112,15 +142,39 @@ def get_rst_by_tax_data(tax_data:TD.TaxDataset,db_eng=None)->list[list[RegSetTer
     # va chercher les associations territoire règlements pour l'ensemble de ces territoires
     relevant_rsts = get_postgis_rst_by_terr_id(relevant_territory_ids)
     # pour chaque RST, va chercher les points correspondants
-    tax_dataset_match = []
-    for rst_to_filter_by in relevant_rsts:
-        filtered_tax_dataset = tax_data.year_filter(rst_to_filter_by.start_year,rst_to_filter_by.end_year).territory_filter(rst_to_filter_by.territory_info)
-        tax_dataset_match.append(filtered_tax_dataset)
+    tax_dataset_match = split_td_by_rst(tax_data,relevant_rsts)
     return relevant_rsts,tax_dataset_match
 
+def split_td_by_rst(td: TD.TaxDataset,rst:list[RegSetTerritory])->list[TD.TaxDataset]:
+    """
+    # split_td_by_rst
+    Function that taxes the input TaxDataset and splits it to match the RegSetTerritory in the output
+    list
+    
+    Inputs
+        - td: the original complete tax dataset
+        - rst: a list of the RegSetTerritories which intersect with the tax dataset
+
+    Outputs
+        - a lsit of TaxData which should be assigned to the input RegSetTerritory
+    """
+    tax_dataset_match = []
+    for rst_to_filter_by in rst:
+        filtered_tax_dataset = td.year_filter(rst_to_filter_by.start_year,rst_to_filter_by.end_year).territory_filter(rst_to_filter_by.territory_info)
+        tax_dataset_match.append(filtered_tax_dataset)
+    return tax_dataset_match
+
 def explore_RST_TD(reg_sets:Union[RegSetTerritory,list[RegSetTerritory]],tax_data:Union[TD.TaxDataset,list[TD.TaxDataset]])->Union[Map,list[Map]]:
-    '''# explore_RST
-        permet d'aller regarder les données  '''
+    """# explore_RST
+        permet d'aller regarder les données  
+        
+        Inputs:
+            - reg_sets: a list of regulation sets or a regset
+            - tax_data: a list of tax data or a tax data object corresponding to the corresponding
+            reg_set in reg_sets
+        Outputs
+            - A folium map item if the inputs are single items or a list of Folium maps otherwise
+    """
     if isinstance(reg_sets,list) and isinstance(tax_data,list):
         if not (len(reg_sets)==len(tax_data)):
             raise KeyError('reg_sets and tax_data must have same length')
