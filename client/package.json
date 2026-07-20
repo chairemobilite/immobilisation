@@ -27,7 +27,7 @@
     "@mui/system": "^7.3.1",
     "@mui/x-tree-view": "^8.10.2",
     "@sgratzl/chartjs-chart-boxplot": "^4.4.4",
-    "axios": "^1.16.0",
+    "axios": "^1.18.0",
     "chart.js": "^4.4.8",
     "chroma-js": "^3.1.2",
     "geojson": "^0.5.0",
