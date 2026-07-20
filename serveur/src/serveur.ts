@@ -2,18 +2,19 @@ import express ,{Application,Request, Response}from 'express';
 import { Pool } from 'pg';
 import cors from 'cors';
 import { createApiRouter } from './api/routes';
-import config from './config';
+import dbConfig from './db/dbConfig';
+import serverConfig from './serverConfig';
+import pool from './db/createPool'
 import listEndpoints from 'express-list-endpoints';
 
 const app = express();
-const port = config.server.port;
+const port = serverConfig.server.port;
 
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 // Database connection
-const pool = new Pool(config.database);
 
 
 // Routes
@@ -32,10 +33,9 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 // Start server
 app.listen(port, async () => {
   console.log(`Server running at http://localhost:${port}`);
-  console.log(`Server user info:${config.database.user}`)
-  console.log(`Server pwd: ${config.database.password}`)
-  console.log(`Server address info:${config.database.host}`)
-  console.log(`Server database info:${config.database.database}`)
+  console.log(`Server user info:${dbConfig.database.user}`)
+  console.log(`Server address info:${dbConfig.database.host}`)
+  console.log(`Server database info:${dbConfig.database.database}`)
   console.log(`Server running at ${new Date().toISOString()}`); 
   let client
   try{
