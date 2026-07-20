@@ -1,5 +1,3 @@
-import os
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
@@ -7,6 +5,9 @@ Created on Thu Jul 22 2024
 
 @author: paul charbonneau
 """
+
+import os
+
 
 # ce fichier contient l'ensemble des variables de connexion a la base de donnees pg
 # la version de la base de donnees est 
@@ -49,17 +50,27 @@ db_column_tax_constr_year = 'rl0307a'
 db_column_tax_land_use = 'rl0105a'
 db_column_tax_gross_floor_area ='rl0308a'
 db_column_tax_number_dwellings = 'rl0311a'
+db_column_tax_n_rooms_rentals = 'rl0312a'
+db_column_tax_n_other_rooms = 'rl0313a'
 # cadastre
 db_column_lot_id = 'g_no_lot'
 # cartographie_secteurs
 db_column_territory_id = 'id_periode_geo'
 db_column_territory_name = 'ville_sec'
+db_column_territory_city = 'ville'
+db_column_territory_zone = 'secteur'
 # historique
 db_column_history_id = "id_periode"
 db_column_history_start_year = 'date_debut_periode'
 db_column_history_end_year = 'date_fin_periode'
 # règlementation stationnement
 db_column_parking_regs_id = 'id_reg_stat'
+db_column_reg_start_year = 'annee_debut_reg'
+db_column_reg_end_year ='annee_fin_reg'
+db_column_reg_ident= 'texte_loi'
+db_column_reg_art = 'article_loi'
+db_column_reg_para = 'paragraphe_loi'
+db_column_reg_city = 'ville'
 db_column_parking_subset_id = 'ss_ensemble'
 db_column_stacked_parking_id = 'id_reg_stat_emp'
 db_column_threshold_value = 'seuil'
@@ -72,6 +83,7 @@ db_column_parking_slope_max = 'pente_max'
 db_column_parking_description = 'description'
 # unite stationnement
 db_column_units_id = 'id_unite'
+db_column_unit_description='desc_unite'
 db_column_tax_data_column_to_multiply = 'colonne_role_foncier'
 db_column_tax_data_conversion_slope = 'facteur_correction'
 db_column_tax_data_conversion_zero = 'abscisse_correction'
@@ -79,12 +91,22 @@ db_column_tax_data_conversion_zero = 'abscisse_correction'
 db_column_reg_sets_id = 'id_er'
 db_column_reg_sets_start_year = 'date_debut_er'
 db_column_reg_sets_end_year = 'date_fin_er'
+db_column_reg_sets_desc = 'description_er'
 # utilsiation du territoire
 db_column_land_use_id = 'cubf'
+db_column_land_use_desc = 'description'
 #territoire d'analyse
 db_column_analysis_territory_id = 'id_quartier'
 db_column_analysis_territory_name = 'nom_quartier'
-
+#Intrants calculs
+db_column_converted_value='valeur'
+# Résultats calculs
+db_column_supply_comment='commentaire'
+db_column_supply_est_meth='methode_estime'
+db_column_supply_min='n_places_min'
+db_column_supply_max='n_places_max'
+db_column_supply_meas='n_places_mesure'
+db_column_supply_estimated='n_places_estime'
 # colonnes de géométrie
 db_geom_analysis ='geometry'
 db_geom_tax = 'geometry'

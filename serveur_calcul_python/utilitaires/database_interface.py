@@ -38,7 +38,7 @@ def import_csv_to_db(path,table):
         df.to_sql(con=con,name = table,schema="public",if_exists="append",index=False)
 
 def expand_regs_for_past(input_reg_set_index: int,output_reg_set_index:int,reg_set_association_table:str,header_table:str,piled_table:str):
-    '''expand_regs_for_past
+    """expand_regs_for_past
         Input:
             - input_reg_set_index: numéro de l'ensemble de règlements à reproduire
             - output_reg_set_index: numéro de l'ensemble de règlements à remplir
@@ -46,7 +46,7 @@ def expand_regs_for_past(input_reg_set_index: int,output_reg_set_index:int,reg_s
             - header_table: table de définition des entete de règlements
             - piled_table : table de règlements empiles
         output:
-            aucun'''
+            aucun"""
     engine = create_engine(config_db.pg_string)
     with engine.connect() as con:
         # pull the regulation set
@@ -111,7 +111,7 @@ def retrieve_land_use_data():
     print(data3.head(50))
 
 def retrieve_parking_regs(**kwargs):
-    '''retrieve_parking_regs
+    """retrieve_parking_regs
         kwargs:
             - type: type de requete: 
                 -   0 pour une période
@@ -119,7 +119,7 @@ def retrieve_parking_regs(**kwargs):
                 -   2 un règlement
             - value : valeur de la periode, du quartier ou du règlement
         output:
-            Règlements'''
+            Règlements"""
     value = kwargs.get('value',None)
     type = kwargs.get("type",None)
     engine = create_engine(config_db.pg_string)
@@ -158,21 +158,25 @@ def retrieve_large_periods():
     return data2
 
 def insert_GeoJSON(path,table):
-    '''insert_GeoJSON
+    """
+    # insert_GeoJSON
         Inputs: 
         - path: path to relevant geojson file to insert into the database
-        - table: table name in which to insert things'''
+        - table: table name in which to insert things
+    """
     engine = create_engine(config_db.pg_string)
     gdf = gpd.read_file(path)
     gdf.to_postgis(table,con=engine,if_exists="append",schema="public",index=False)
 
 def insert_parking_requirements(path,table):
-    '''insert_parking_requirements:
+    """
+    # insert_parking_requirements:
         Inputs:
             path: path to csv file that contains the parking requirements
             table: name of the table to insert into
         Outputs:
-            none'''
+            none
+    """
     engine = create_engine(config_db.pg_string)
     df = pd.read_csv(path)
     with engine.connect() as con:
@@ -196,12 +200,12 @@ def reset_sequence_to_max(table_name:str,id_name:str):
     conn.close()
 
 def insert_parking_regs_excel(path,table):
-    '''insert_parking_regs_excel:
+    """insert_parking_regs_excel:
         Inputs:
             path: path to csv file that contains the parking requirements
             table: name of the table to insert into
         Outputs:
-            none'''
+            none"""
     engine = create_engine(config_db.pg_string)
     df = pd.read_excel(path)
     with engine.connect() as con:

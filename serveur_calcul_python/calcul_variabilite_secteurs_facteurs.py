@@ -1,3 +1,14 @@
+"""
+Copyright (c) 2026 Paul Charbonneau
+
+Licensed under the MIT License.
+See the LICENSE file in the project root for license information.
+
+Entry point to conduct variability analysis which aims to apply all 
+the regulations to all the properties in the city with the aim of 
+understand how aggregate parking supply could vary depending on regulations
+"""
+
 import os
 import classes.parking_inventory as PI
 import classes.parking_inventory_inputs as PII

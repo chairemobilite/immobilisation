@@ -1,3 +1,14 @@
+"""
+Copyright (c) 2026 Paul Charbonneau
+
+Licensed under the MIT License.
+See the LICENSE file in the project root for license information.
+
+Entry point to calculate parking for an entire neighbourhood. Neighbourhood
+id is piped through and used to pull territorial limits and select the 
+required data and compute parking
+"""
+
 import classes.parking_inventory as PI
 import sys
 import json

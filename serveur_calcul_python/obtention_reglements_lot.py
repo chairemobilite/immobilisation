@@ -1,3 +1,13 @@
+"""
+Copyright (c) 2026 Paul Charbonneau
+
+Licensed under the MIT License.
+See the LICENSE file in the project root for license information.
+
+Entry point to obtain parking regulations which apply to a given lot 
+in preparation of semi manual calculation
+"""
+
 import classes.parking_reg_sets as PRS
 import os
 import debugpy

@@ -385,6 +385,7 @@ export const creationRouteurReglements = (pool: Pool): Router => {
                 }
             } else {
                 console.error(`Processus enfant échoué avec le code : ${code}`);
+                console.error(`Stack trace: ${errorData}`)
                 return res.status(500).send(`Erreur: ${errorData}`);
             }
         });

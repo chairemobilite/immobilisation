@@ -12,9 +12,9 @@ L'utilisateur commence par naviguer à la [page de versement des données de rô
 ## Téléchargement des données
 Les données du rôle foncier peuvent être obtenues sur le site de [Données Québec](https://www.donneesquebec.ca/recherche/dataset/roles-d-evaluation-fonciere-du-quebec). Il est recommandé d'assurer la concordance des années entre le rôle foncier et le cadastre.
 ## Extraction de la municipalité pertinente et conversion geojson
-Il est suggéré de télécharger le format FGDB et d'utiliser le [script fourni](../../serveur_calcul_python/utilitaires/0_conversion_FGDB_initiale.py) pour extraire seulement les données de la municipalité concernée. Commencez par installer un environnemetn conda avec les bonnes librairies:
+Il est suggéré de télécharger le format FGDB et d'utiliser le [script fourni](../../serveur_calcul_python/utilitaires/0_conversion_FGDB_initiale.py) pour extraire seulement les données de la municipalité concernée. Commencez par installer un environnement conda avec les bonnes librairies:
 ```
-conda env --file environment_python_conversion.yml
+conda env create --file serveur_calcul_python/environment.yml
 ```
 Vous pouvez trouver le code municipal à spécifier dans l'[index](https://www.donneesquebec.ca/recherche/dataset/roles-d-evaluation-fonciere-du-quebec/resource/d2db6102-9215-4abc-9b5b-2c37f2e12618). Modifiez les chemins et le code de municipalité dans le fichier pour extraire le dossier pertinent. Cette opération peut être assez longue pour les grandes municipalités
 ```
