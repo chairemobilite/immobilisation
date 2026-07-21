@@ -1,6 +1,6 @@
 import { Router, Request, Response, RequestHandler } from 'express';
 import { Pool } from 'pg';
-import { DbQuartierAnalyse } from 'secteursAnalyse.types';
+import { DbQuartierAnalyse } from '@localTypes/secteursAnalyse.types';
 // Types pour les requêtes
 import { Polygon, MultiPolygon } from 'geojson';
 interface GeometryBody {

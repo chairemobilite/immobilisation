@@ -1,4 +1,4 @@
-import { requestRespOut } from "enqueteOD.types"
+import { requestRespOut } from "@localTypes/enqueteOD.types"
 import { Pool } from "pg"
 
 export interface requeteObtenionSQL{

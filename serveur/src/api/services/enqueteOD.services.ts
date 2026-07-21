@@ -8,8 +8,8 @@ import {
     paramsRequetePersOD,
     rouleRequeteOD
 } from "../repositories/enqueteOD.repositories";
-import { ApiResponse } from "api.types";
-import { depODOut, menageODOut, persODOut } from "enqueteOD.types";
+import { ApiResponse } from "@localTypes/api.types";
+import { depODOut, menageODOut, persODOut } from "@localTypes/enqueteOD.types";
 
 
 export function nettoyageParametresRequeteMenageOD(query:any):paramsRequeteMenageOD{ 

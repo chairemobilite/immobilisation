@@ -9,9 +9,12 @@ the data through the api
 */
 
 
-import { DbAssociationReglementUtilSol, DbCountAssoc, DbEnteteEnsembleReglement, ParamsAssocEnsReg, ParamsEnsReg } from "ensembleReglements.types";
-import { ParamsTerritoire } from "historique.types";
-import { ParamsRole } from "role.types";
+import { 
+   ParamsAssocEnsReg, 
+   ParamsEnsReg 
+} from "@localTypes/ensembleReglements.types";
+import { ParamsTerritoire } from "@localTypes/historique.types";
+import { ParamsRole } from "@localTypes/role.types";
 import pool from '../../db/createPool';
 import { 
     deleteRegSetAssocServ, 

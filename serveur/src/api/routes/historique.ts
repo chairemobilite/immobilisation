@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import { Pool } from 'pg';
-import { DbHistoriqueGeopol } from 'historique.types';
+import { DbHistoriqueGeopol } from '@localTypes/historique.types';
 // Types pour les requêtes
 import { Polygon,MultiPolygon } from 'geojson';
 interface GeometryBody {

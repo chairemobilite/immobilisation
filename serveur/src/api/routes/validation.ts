@@ -6,8 +6,8 @@ import { condition_strate,
     RequeteResValide, 
     CorpsValide, 
     RequeteGraphiqueValidation,   
-} from 'validation.types';
-import { dataHistogrammeVariabilite } from 'analyseVariabilite.types';
+} from '@localTypes/validation.types';
+import { dataHistogrammeVariabilite } from '@localTypes/analyseVariabilite.types';
 import { Router, RequestHandler } from 'express';
 import { Pool } from 'pg';
 import { bin, Bin, HistogramGeneratorNumber } from 'd3-array';

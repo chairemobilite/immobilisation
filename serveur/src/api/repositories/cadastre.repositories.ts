@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import { DbCadastre } from "cadastre.types";
+import { DbCadastre } from "@localTypes/cadastre.types";
 
 export interface paramsRequeteLot{
     g_no_lot?:string, 
