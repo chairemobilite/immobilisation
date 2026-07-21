@@ -10,6 +10,7 @@ This is the router which requests the correct handler/controller based on the en
 import { Router } from 'express';
 
 import {
+    createRegSetCopy,
     infoPourGraphiques,
     modifieAssocEnsembleReglement,
     modifieEnteteEnsembleReglement,
@@ -61,5 +62,6 @@ export const creationRouteurEnsemblesReglements = (): Router => {
     router.get('/entete-par-territoire/:id',validate(DeleteItemsSchema), obtiensEntetesParTerritoire)
     router.get('/par-role/:ids', validate(GetRegSetsByTaxIdSchema),obtiensEnsRegCompletParRole)
     router.post('/informations-pour-graphique',validate(GetInfoForChartsSchema), infoPourGraphiques)
+    router.post('/copy/:id',validate(DeleteItemsSchema),createRegSetCopy)
     return router;
 };

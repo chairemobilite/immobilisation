@@ -17,6 +17,7 @@ import { ParamsTerritoire } from "@localTypes/historique.types";
 import { ParamsRole } from "@localTypes/role.types";
 import pool from '../../db/createPool';
 import { 
+    copyRegSetServ,
     deleteRegSetAssocServ, 
     deleteRegSetServ, 
     getChartInfoServ, 
@@ -367,5 +368,24 @@ export const infoPourGraphiques: RequestHandler = async (req, res,next ) => {
     }
     
 };
-
-
+/**
+ * Controller used to copy regulation sets summarily. points to
+ * relevant service
+ * @param req request format from express
+ * @param res response format form express
+ * @param next next function execute in the express stack
+ */
+export const createRegSetCopy:RequestHandler=async (req, res,next)=>{
+    try{
+        console.log('copying regulation set')
+        const {id}=req.validated?.params as {id:number};
+        const out = await copyRegSetServ(id)
+        if (out.success===true){
+            res.status(200).json(out)
+        }else{
+            res.status(500).json(out)
+        }
+    }catch(err:any){
+        res.status(500).json({success:false,message:err})
+    }
+}

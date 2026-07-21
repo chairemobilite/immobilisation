@@ -156,16 +156,11 @@ export async function RunObtainSpecificRegSetQueriesRepo(client: PoolClient, id:
           `
     const result_rules = await client.query<DbAssociationReglementUtilSol>(query2, id);
 
-    const query_3 = `
-            SELECT *
-            FROM public.cubf
-            ORDER BY cubf ASC
-          `
-    const resulUtilSol = await client.query<DbUtilisationSol>(query_3);
+    const resulUtilSol = await RunGetAllLandUsesQuery(client)
     return {
         entete_all: result_header.rows,
         assoc_util_reg_all: result_rules.rows,
-        table_util_sol: resulUtilSol.rows
+        table_util_sol: resulUtilSol
     }
 }
 
@@ -590,4 +585,66 @@ export function RunJoinQueriesToPythonOutputRepo(
         desc_unite: e.unite.map((uniteOut) => result_unit.find((unitRet) => unitRet.id_unite === uniteOut)?.desc_unite ?? 'N/A')
     }));
     return output
+}
+/**
+ * Copies the header of the parking regulation set u
+ * @param client pg pool client to use for the transaction
+ * @param idToCopy the identifier of the regulation set to copy
+ * @returns the newly created header
+ */
+export async function RunDuplicateRegSetHeaderRepo(client: PoolClient, idToCopy: number) {
+    const query = `
+        INSERT INTO public.ensembles_reglements_stat(
+            description_er,
+            date_debut_er,
+            date_fin_er
+        )
+        SELECT
+            CONCAT(description_er, ' - copie') AS description_er,
+            date_debut_er,
+            date_fin_er
+        FROM ensembles_reglements_stat
+        WHERE id_er = $1
+        RETURNING *;
+    `;
+    const resultAssoc = await client.query<DbEnteteEnsembleReglement>(query, [idToCopy]);
+    return resultAssoc.rows[0]
+}
+/**
+ * copies the associations of the coied reg set but changes the identifier
+ * @param client a pg poolClient to use to perform the operation
+ * @param idToCopy id of the reg set to copy
+ * @param newId id of the newly created reg set
+ * @returns the newly create assignements
+ */
+export async function RunDuplicateRegSetAssocRepo(client:PoolClient,idToCopy:number,newId:number){
+    const query=`
+        With inserted as(
+        INSERT INTO public.association_er_reg_stat(id_er,cubf,id_reg_stat)
+        SELECT
+            $1 as id_er,
+            cubf,
+            id_reg_stat
+        from public.association_er_reg_stat
+        where id_er=$2
+        RETURNING * )
+        Select * from inserted
+        order by cubf::text asc;
+      `;
+    const resultAssoc = await client.query<DbAssociationReglementUtilSol>(query, [newId,idToCopy]);
+    return resultAssoc.rows
+}
+/**
+ * runs the query used to obtain the data
+ * @param client the pg pool client to use to run the queries
+ * @returns the entire land use table
+ */
+export async function RunGetAllLandUsesQuery(client:PoolClient){
+    const query_3 = `
+            SELECT *
+            FROM public.cubf
+            ORDER BY cubf ASC
+          `
+    const resulUtilSol = await client.query<DbUtilisationSol>(query_3);
+    return resulUtilSol.rows
 }

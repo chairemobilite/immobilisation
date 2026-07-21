@@ -14,7 +14,7 @@ import {
     DbEnteteEnsembleReglement 
 } from '@localTypes/ensembleReglements.types'
 import pool from '../../db/createPool'
-import { RunChartsInfoPythonRepo, RunCreateNewRegSetHeaderRepo, RunCreateRegSetAssocRepo, RunDeleteRegSetAssocRepo, RunDeleteRegSetRepo, RunGetAssociatedInformationRepo, RunGetRegSetByTaxDataRepo, RunGetRegSetHeadersFromTerritoryRepo, RunJoinQueriesToPythonOutputRepo, RunModifyRegSetAssocRepo, parsePythonOuputJSONRepo, RunGetRegsForRegSetRepo, RunObtainRegSetHeadersQueriesRepo, RunObtainSpecificRegSetQueriesRepo, RunUpdateRegSetRepo } from '../repositories/ensembleReglements.repositories'
+import { RunChartsInfoPythonRepo, RunCreateNewRegSetHeaderRepo, RunCreateRegSetAssocRepo, RunDeleteRegSetAssocRepo, RunDeleteRegSetRepo, RunGetAssociatedInformationRepo, RunGetRegSetByTaxDataRepo, RunGetRegSetHeadersFromTerritoryRepo, RunJoinQueriesToPythonOutputRepo, RunModifyRegSetAssocRepo, parsePythonOuputJSONRepo, RunGetRegsForRegSetRepo, RunObtainRegSetHeadersQueriesRepo, RunObtainSpecificRegSetQueriesRepo, RunUpdateRegSetRepo, RunDuplicateRegSetHeaderRepo, RunDuplicateRegSetAssocRepo, RunGetAllLandUsesQuery } from '../repositories/ensembleReglements.repositories'
 
 
 /**
@@ -312,5 +312,55 @@ export async function getChartInfoServ(string_in:string){
         if(client){
             await client.release()
         }
+    }
+}
+
+/**
+ * this service the business logic and opens the pool client required 
+ * to complete the copy operation
+ * @param oldId the reg set id for the thing we re trying to copy
+ * @returns the full copied regulation set id and a success flag
+ */
+export async function copyRegSetServ(oldId:number){
+    let client;
+    try {
+        client = await pool.connect();
+        await client.query('BEGIN');
+
+        const newHeader = await RunDuplicateRegSetHeaderRepo(client, oldId);
+        const newId = newHeader.id_er;
+        const newAssocs = await RunDuplicateRegSetAssocRepo(
+            client,
+            oldId,
+            newId
+        );
+
+        const landUse = await RunGetAllLandUsesQuery(client);
+
+        const returnData = {
+            entete: newHeader,
+            assoc_util_reg: newAssocs,
+            table_util_sol: landUse
+        };
+
+        await client.query('COMMIT');
+
+        return {
+            success: true,
+            data: returnData
+        };
+
+    } catch (error:any) {
+        if (client) {
+            await client.query('ROLLBACK');
+        }
+
+        return {
+            success:false,
+            message:'error while duplicating reg set'
+        };
+
+    } finally {
+        client?.release();
     }
 }
