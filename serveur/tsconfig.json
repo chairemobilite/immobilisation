@@ -20,13 +20,15 @@
     },
     "typeRoots": [
       "./node_modules/@types",
-      "./src/types"
     ],
     "types": [
       "node",
       "express",
       "geojson"
     ]
+  },
+  "ts-node": {
+    "files": true
   },
   "include": [
     "src/**/*"

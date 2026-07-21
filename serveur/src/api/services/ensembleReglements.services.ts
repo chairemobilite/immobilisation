@@ -31,12 +31,12 @@ export async function getRegulationSetsService({
     id_er,
 
 }: {
-    date_debut_er_avant?: string,
-    date_debut_er_apres?: string,
-    date_fin_er_avant?: string,
-    date_fin_er_apres?: string,
+    date_debut_er_avant?: number|null,
+    date_debut_er_apres?: number|null,
+    date_fin_er_avant?: number|null,
+    date_fin_er_apres?: number|null,
     description_like?: string,
-    id_er?: string | string[]
+    id_er?: number[]
 }) {
     let client
     try {
