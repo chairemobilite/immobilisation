@@ -2,7 +2,7 @@ import { Request } from 'express'
 import * as repo from '../repositories/territoire.repositories'
 import { Pool } from 'pg'
 import { RepoResponse } from '../../types/database.types'
-import { DbTerritoire } from 'historique.types'
+import { DbTerritoire } from '@localTypes/historique.types'
 
 export const serviceMetAJourTerritoiresPeriodes = async (
     pool:Pool,

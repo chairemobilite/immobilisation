@@ -10,11 +10,11 @@ the data through the api
 
 
 import { 
-   ParamsAssocEnsReg, 
-   ParamsEnsReg 
-} from "ensembleReglements.types";
-import { ParamsTerritoire } from "historique.types";
-import { ParamsRole } from "role.types";
+    ParamsAssocEnsReg, 
+    ParamsEnsReg 
+} from "@localTypes/ensembleReglements.types";
+import { ParamsTerritoire } from "@localTypes/historique.types";
+import { ParamsRole } from "@localTypes/role.types";
 import { 
     deleteRegSetAssocServ, 
     deleteRegSetServ, 

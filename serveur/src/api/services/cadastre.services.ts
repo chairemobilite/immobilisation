@@ -5,8 +5,8 @@ import {
     paramsRequeteLot, 
     rouleRequeteLots 
 } from "../repositories/cadastre.repositories";
-import { DbCadastre } from "cadastre.types";
-import { ApiResponse } from "api.types";
+import { DbCadastre } from "@localTypes/cadastre.types";
+import { ApiResponse } from "@localTypes/api.types";
 
 // wrappers for each data type
 export async function handleCadastreUpload(filePath: string) {

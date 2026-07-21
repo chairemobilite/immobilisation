@@ -1,6 +1,6 @@
 import { Router, Request, RequestHandler } from 'express';
 import { Pool } from 'pg';
-import { DbDefReglement, DbEnteteReglement, DbReglementComplet } from 'reglements.types';
+import { DbDefReglement, DbEnteteReglement, DbReglementComplet } from '@localTypes/reglements.types';
 import path from 'path';
 import { spawn } from 'child_process';
 import { GetReglementsParams } from '../repositories/reglements.repositories';

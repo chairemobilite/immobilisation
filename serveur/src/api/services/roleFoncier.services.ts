@@ -1,4 +1,4 @@
-import { ApiResponse } from "api.types";
+import { ApiResponse } from "@localTypes/api.types";
 import {  creationRequeteObtentionRole, paramsRequeteRole, rouleRequeteRole } from "../repositories/roleFoncier.repositories";
 import { handleTempUpload } from "./geojsonGest.services";
 import { DbRole } from "../../types";

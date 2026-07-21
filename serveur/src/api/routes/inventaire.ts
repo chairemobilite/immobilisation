@@ -1,6 +1,6 @@
 import { Router, RequestHandler } from 'express';
 import { Pool } from 'pg';
-import { ParamsQuartier } from 'secteursAnalyse.types';
+import { ParamsQuartier } from '@localTypes/secteursAnalyse.types';
 import { 
     CorpsRequeteInventaire,
     RequeteCalculeInventaireRegMan,
@@ -8,11 +8,11 @@ import {
     CorpsRequeteInventaireGros,
     RequeteInventaire ,
     ParamsInventaire
-} from 'inventaire.types';
+} from '@localTypes/inventaire.types';
 // Types pour les requêtes
 import path from 'path';
 import { spawn } from 'child_process';
-import { ParamsCadastre } from 'cadastre.types';
+import { ParamsCadastre } from '@localTypes/cadastre.types';
 
 export const creationRouteurInventaire = (pool: Pool): Router => {
     const router = Router();

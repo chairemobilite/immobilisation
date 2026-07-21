@@ -1,8 +1,8 @@
 import { Router,  RequestHandler } from 'express';
 import { Pool } from 'pg';
-import { DbCadastre,ParamsCadastre } from 'cadastre.types'
-import { ParamsQuartier } from 'secteursAnalyse.types';
-import { DbRole } from 'role.types';
+import { DbCadastre,ParamsCadastre } from '@localTypes/cadastre.types'
+import { ParamsQuartier } from '@localTypes/secteursAnalyse.types';
+import { DbRole } from '@localTypes/role.types';
 // Types pour les requêtes
 import { Polygon, MultiPolygon } from 'geojson';
 import { validateBboxQuery } from '../validators/cadastreValidator';

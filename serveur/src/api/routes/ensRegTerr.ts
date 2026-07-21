@@ -1,7 +1,7 @@
 import { Router,  RequestHandler } from 'express';
 import { Pool } from 'pg';
-import { ParamsAssocEnsRegTerr, } from 'ensembleReglements.types';
-import { ParamsTerritoire } from 'historique.types'
+import { ParamsAssocEnsRegTerr, } from '@localTypes/ensembleReglements.types';
+import { ParamsTerritoire } from '@localTypes/historique.types'
 
 
 export const creationRouteurEnsRegTerr = (pool: Pool): Router => {
