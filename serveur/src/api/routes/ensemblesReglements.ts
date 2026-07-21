@@ -23,6 +23,18 @@ import {
     supprimeAssocEnsembleReglement,
     supprimeEnsembleReglement
 } from '../controllers/ensemblesReglements.controllers';
+import { 
+    DeleteItemsSchema, 
+    GetFullRegSetsSchema, 
+    GetInfoForChartsSchema, 
+    GetRegSetsByTaxIdSchema, 
+    GetRegSetsQuerySchema, 
+    ModifyLandUseToRuleAssignSchema, 
+    ModifyRegSetHeaderSchema, 
+    PostLandUseToRuleAssignSchema, 
+    PostRegSetHeaderSchema 
+} from '../validators/ensembleReglement.validator';
+import { validateIncomingQueryInputs } from '../middleware/validateIncomingQueryInputs';
 
 
 /**
@@ -36,18 +48,18 @@ export const creationRouteurEnsemblesReglements = (): Router => {
 
     // Routes
     // basiques
-    router.delete('/:id', supprimeEnsembleReglement)
-    router.get('/complet/:id', obtiensEnsembleReglementCompletParId)
-    router.get('/entete', obtiensEntetesEnsemblesReglements);
-    router.post('/entete', nouvelleEnteteEnsembleReglement)
-    router.put('/entete/:id', modifieEnteteEnsembleReglement)
-    router.post('/assoc', nouvelleAssociationEnsembleReglement)
-    router.put('/assoc/:id', modifieAssocEnsembleReglement)
-    router.delete('/assoc/:id', supprimeAssocEnsembleReglement)
+    router.delete('/:id',validateIncomingQueryInputs(DeleteItemsSchema), supprimeEnsembleReglement)
+    router.get('/complet/:id',validateIncomingQueryInputs(GetFullRegSetsSchema), obtiensEnsembleReglementCompletParId)
+    router.get('/entete',validateIncomingQueryInputs(GetRegSetsQuerySchema), obtiensEntetesEnsemblesReglements);
+    router.post('/entete',validateIncomingQueryInputs(PostRegSetHeaderSchema), nouvelleEnteteEnsembleReglement)
+    router.put('/entete/:id', validateIncomingQueryInputs(ModifyRegSetHeaderSchema),modifieEnteteEnsembleReglement)
+    router.post('/assoc', validateIncomingQueryInputs(PostLandUseToRuleAssignSchema),nouvelleAssociationEnsembleReglement)
+    router.put('/assoc/:id',validateIncomingQueryInputs(ModifyLandUseToRuleAssignSchema), modifieAssocEnsembleReglement)
+    router.delete('/assoc/:id',validateIncomingQueryInputs(DeleteItemsSchema), supprimeAssocEnsembleReglement)
     // ancilaires
-    router.get('/regs-associes/:id', obtiensReglementsPourEnsReg);
-    router.get('/entete-par-territoire/:id', obtiensEntetesParTerritoire)
-    router.get('/par-role/:ids', obtiensEnsRegCompletParRole)
-    router.post('/informations-pour-graphique', infoPourGraphiques)
+    router.get('/regs-associes/:id',validateIncomingQueryInputs(DeleteItemsSchema), obtiensReglementsPourEnsReg);
+    router.get('/entete-par-territoire/:id',validateIncomingQueryInputs(DeleteItemsSchema), obtiensEntetesParTerritoire)
+    router.get('/par-role/:ids', validateIncomingQueryInputs(GetRegSetsByTaxIdSchema),obtiensEnsRegCompletParRole)
+    router.post('/informations-pour-graphique',validateIncomingQueryInputs(GetInfoForChartsSchema), infoPourGraphiques)
     return router;
 };

@@ -42,12 +42,12 @@ export async function RunObtainRegSetHeadersQueriesRepo(
         id_er,
 
     }: {
-        date_debut_er_avant?: string,
-        date_debut_er_apres?: string,
-        date_fin_er_avant?: string,
-        date_fin_er_apres?: string,
+        date_debut_er_avant?: number|null,
+        date_debut_er_apres?: number|null,
+        date_fin_er_avant?: number|null,
+        date_fin_er_apres?: number|null,
         description_like?: string,
-        id_er?: string | string[]
+        id_er?: number[]
     }
 ) {
     let queryConds = [];
@@ -59,7 +59,7 @@ export async function RunObtainRegSetHeadersQueriesRepo(
       `
     if (typeof (date_debut_er_avant) !== 'undefined') {
         console.log('ajout condition date_debut_er_avant')
-        if (date_debut_er_avant !== 'null') {
+        if (date_debut_er_avant !== null) {
             queryConds.push(`(date_debut_er <= $${countquery} OR date_debut_er IS NULL)`);
             queryVals.push(date_debut_er_avant);
             countquery++;
@@ -69,7 +69,7 @@ export async function RunObtainRegSetHeadersQueriesRepo(
     }
     if (typeof (date_debut_er_apres) !== 'undefined') {
         console.log('ajout condition date_debut_er_apres')
-        if (date_debut_er_apres !== 'null') {
+        if (date_debut_er_apres !== null) {
             queryConds.push(`date_debut_er >= $${countquery}`);
             queryVals.push(date_debut_er_apres);
             countquery++;
@@ -79,7 +79,7 @@ export async function RunObtainRegSetHeadersQueriesRepo(
     }
     if (typeof (date_fin_er_avant) !== 'undefined') {
         console.log('ajout condition date_fin_er_avant')
-        if (date_fin_er_avant !== 'null') {
+        if (date_fin_er_avant !== null) {
             queryConds.push(`date_fin_er <= $${countquery}`);
             queryVals.push(date_fin_er_avant);
             countquery++;
@@ -89,7 +89,7 @@ export async function RunObtainRegSetHeadersQueriesRepo(
     }
     if (typeof (date_fin_er_apres) !== 'undefined') {
         console.log('ajout condition date_fin_er_apres')
-        if (date_fin_er_apres !== 'null') {
+        if (date_fin_er_apres !== null) {
             queryConds.push(`(date_fin_er >= $${countquery} OR date_fin_er IS null)`);
             queryVals.push(date_fin_er_apres);
             countquery++;
@@ -104,22 +104,17 @@ export async function RunObtainRegSetHeadersQueriesRepo(
         countquery++;
     }
     if (typeof (id_er) !== 'undefined') {
-        let id_er_list: string[] = [];
-        if (typeof id_er === 'string') {
-            id_er_list = id_er.split(',');
-        } else if (Array.isArray(id_er)) {
-            id_er_list = id_er.flatMap(item => typeof item === 'string' ? item.split(',') : []);
-        }
-        if (id_er_list.length === 1) {
+        
+        if (id_er.length === 1) {
             queryConds.push(`id_er = $${countquery}`);
-            queryVals.push(id_er_list[0]);
+            queryVals.push(id_er[0]);
             countquery++;
-        } else if (id_er_list.length > 1) {
+        } else if (id_er.length > 1) {
             // Generate placeholders for each id_er
-            const placeholders = id_er_list.map((_, idx) => `$${countquery + idx}`).join(',');
+            const placeholders = id_er.map((_, idx) => `$${countquery + idx}`).join(',');
             queryConds.push(`id_er IN (${placeholders})`);
-            queryVals.push(...id_er_list);
-            countquery += id_er_list.length;
+            queryVals.push(...id_er);
+            countquery += id_er.length;
         }
     }
     if (queryConds.length > 0) {
@@ -363,8 +358,8 @@ export async function RunDeleteRegSetRepo(
                 resultHeader = await client.query(queryHeader, [id_er]);
                 resultAssoc = { rowCount: 1 }
             }
-            const successHeader = resultHeader && resultAssoc.rowCount >= 0 ? true : false;
-            const successAssoc = resultAssoc && resultAssoc.rowCount >= 0 ? true : false;
+            const successHeader = resultHeader ? resultHeader.rowCount === 1 : false;
+            const successAssoc = resultAssoc ? resultAssoc.rowCount >= 0 : false;
         return successHeader && successAssoc
 }
 
@@ -394,7 +389,7 @@ export async function RunUpdateRegSetRepo(
         WHERE id_er = $4
         RETURNING *;
       `;
-        const result = await client.query<DbEnteteEnsembleReglement>(query, [description_er, date_debut_er, date_fin_er, id_er]);
+        const result = await client.query<DbAssociationReglementUtilSol>(query, [description_er, date_debut_er, date_fin_er, id_er]);
         return result.rows[0]
 }
 
@@ -451,7 +446,7 @@ export async function RunDeleteRegSetAssocRepo(client:PoolClient,id_assoc:number
           WHERE id_assoc_er_reg = $1`
         const resultAssoc: any = await client.query(queryAssoc, [id_assoc]);
 
-        const successAssoc = resultAssoc && resultAssoc.rowCount >= 0 ? true : false;
+        const successAssoc = resultAssoc && resultAssoc.rowCount > 0 ? true : false;
         return successAssoc
 }
 

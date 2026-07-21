@@ -47,7 +47,14 @@ export const obtiensEntetesEnsemblesReglements: RequestHandler = async (req: Req
             date_fin_er_apres, 
             description_like, 
             id_er 
-        } = req.query as {date_debut_er_avant:string,date_debut_er_apres:string,date_fin_er_avant:string,date_fin_er_apres:string,description_like:string,id_er:string};
+        } = req.validated?.query as {
+            date_debut_er_avant?:number|null,
+            date_debut_er_apres?:number|null,
+            date_fin_er_avant?:number|null,
+            date_fin_er_apres?:number|null,
+            description_like?:string,
+            id_er?:number[]
+        };
         const message=await getRegulationSetsService({
             date_debut_er_avant:date_debut_er_avant,
             date_debut_er_apres:date_debut_er_apres,
@@ -74,11 +81,10 @@ export const obtiensEntetesEnsemblesReglements: RequestHandler = async (req: Req
 export const obtiensEnsembleReglementCompletParId: RequestHandler = async (req: Request, res: Response, next:NextFunction): Promise<void> => {
     console.log('Serveur - Obtention ensembles reglements complets')
     try {
-        const { id } = req.params as {id:string};
+        const { id } = req.validated?.params as {id:number[]};
         // Parse the comma-separated IDs into an array of numbers
-        const idArray = id.split(',').map(Number);
         // Dynamically create placeholders for the query (e.g., $1, $2, $3, ...)
-        const output = await getFullRegulationSetById(idArray)
+        const output = await getFullRegulationSetById(id)
         if (output.success){
             res.status(200).json(output);
         }else{
@@ -96,9 +102,8 @@ export const obtiensEnsembleReglementCompletParId: RequestHandler = async (req: 
 export const obtiensReglementsPourEnsReg: RequestHandler = async (req:Request, res:Response,next): Promise<void> => {
     console.log('Serveur - Obtention entetes de reglements associés à un ensemble de règlements')
     try {
-        const { id } = req.params;
-        const id_out = Number(id)
-        const result=await getRegulationsForRegSetIdServ(id_out)
+        const { id } = req.validated?.params as {id:number};
+        const result=await getRegulationsForRegSetIdServ(id)
         if (result.success===true){
             res.status(200).json(result);
         }else{
@@ -118,9 +123,8 @@ export const obtiensEntetesParTerritoire: RequestHandler<ParamsTerritoire> = asy
     console.log('Serveur - Obtention entete reglement par territoire')
 
     try {
-        const { id } = req.params;
-        const idOut =Number(id)
-        const result = await getRegulationsByTerritoryServ(idOut)
+        const { id } = req.validated?.params as {id:number};
+        const result = await getRegulationsByTerritoryServ(id)
         if (result.success===true){
             res.status(200).json(result);
         }else{
@@ -139,10 +143,8 @@ export const obtiensEnsRegCompletParRole: RequestHandler<ParamsRole> = async (re
     console.log('obtention ens-reg par role - Implémentation incomplète')
 
     try {
-        const { ids } = req.params;
-        const listeIds = typeof ids === 'string' ? ids.split(',') : ids;
-        const stringToTransmit = "'" + listeIds.join("','") + "'"
-        const output = await getRegulationSetsByTaxIdServ(listeIds)
+        const { ids } = req.validated?.params as {ids:string[]};
+        const output = await getRegulationSetsByTaxIdServ(ids)
         if (output.success===true){
             res.status(200).json(output);
         }else{
@@ -157,11 +159,18 @@ export const obtiensEnsRegCompletParRole: RequestHandler<ParamsRole> = async (re
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const nouvelleEnteteEnsembleReglement: RequestHandler<void> = async (req, res, next): Promise<void> => {
+export const nouvelleEnteteEnsembleReglement: RequestHandler = async (req, res, next): Promise<void> => {
     console.log('Sauvegarde nouvelle entete ensemble reg')
     try {
-
-        const { description_er, date_debut_er, date_fin_er } = req.body;
+        const { 
+            description_er, 
+            date_debut_er, 
+            date_fin_er 
+        } = req.validated?.body as {
+            description_er:string,
+            date_debut_er:number|null,
+            date_fin_er:number|null
+        };
         const result= await insertRegSetHeaderServ({
             description_er,date_debut_er,date_fin_er
         })
@@ -183,8 +192,8 @@ export const nouvelleEnteteEnsembleReglement: RequestHandler<void> = async (req,
 export const supprimeEnsembleReglement: RequestHandler<ParamsEnsReg> = async (req, res,next) => {
     console.log('Sauvegarde nouvelle entete ensemble reg')
     try {
-        const { id } = req.params;
-        const result = await deleteRegSetServ(Number(id))
+        const { id } = req.validated?.params as {id:number};
+        const result = await deleteRegSetServ(id)
         if (result.success===true){
             res.status(200).json(result);
         }else{
@@ -203,10 +212,18 @@ export const supprimeEnsembleReglement: RequestHandler<ParamsEnsReg> = async (re
 export const modifieEnteteEnsembleReglement: RequestHandler<ParamsEnsReg> = async (req, res,next ) => {
 
     try {
-        const { id } = req.params
+        const { id } = req.validated?.params as {id:number}
         console.log(`Sauvegarde modification entete ensemble reg id_er: ${id}`)
-        const { description_er, date_debut_er, date_fin_er } = req.body;
-        const output= await modifyRegSetHeaderServ(Number(id),description_er,date_debut_er,date_fin_er)
+        const { 
+            description_er,
+            date_debut_er, 
+            date_fin_er 
+        } = req.validated?.body as {
+            description_er:string,
+            date_debut_er:number|null,
+            date_fin_er:number|null
+        };
+        const output= await modifyRegSetHeaderServ(id,description_er,date_debut_er,date_fin_er)
         if (output.success===true){
             res.status(200).json(output);
         }else{
@@ -221,10 +238,18 @@ export const modifieEnteteEnsembleReglement: RequestHandler<ParamsEnsReg> = asyn
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const nouvelleAssociationEnsembleReglement: RequestHandler<void> = async (req, res,next) => {
+export const nouvelleAssociationEnsembleReglement: RequestHandler = async (req, res,next) => {
     console.log('Sauvegarde nouvelle association ensemble reg')
     try {
-        const { id_er, cubf, id_reg_stat } = req.body;
+        const { 
+            id_er, 
+            cubf, 
+            id_reg_stat 
+        } = req.validated?.body as {
+            id_er:number,
+            cubf:number,
+            id_reg_stat:number
+        };
         const out = await newRegSetAssociationServ(id_er,id_reg_stat,cubf)
         if (out.success===true){
 
@@ -245,10 +270,18 @@ export const nouvelleAssociationEnsembleReglement: RequestHandler<void> = async 
 export const modifieAssocEnsembleReglement: RequestHandler<ParamsEnsReg> = async (req, res,next) => {
     try {
 
-        const { id } = req.params
+        const { id } = req.validated?.params as {id:number};
         console.log(`Sauvegarde modification entete ensemble reg id_er: ${id}`)
-        const { id_er, cubf, id_reg_stat } = req.body;
-        const result = await modifyRegSetAssocServ(Number(id),id_er,id_reg_stat,cubf)
+        const { 
+            id_er, 
+            cubf, 
+            id_reg_stat 
+        } = req.validated?.body as {
+            id_er:number,
+            cubf:number,
+            id_reg_stat:number
+        } 
+        const result = await modifyRegSetAssocServ(id,id_er,id_reg_stat,cubf)
         if (result.success===true){
             res.status(200).json(result);
         }else{
@@ -267,9 +300,9 @@ export const modifieAssocEnsembleReglement: RequestHandler<ParamsEnsReg> = async
 export const supprimeAssocEnsembleReglement: RequestHandler<ParamsAssocEnsReg> = async (req, res,next) => {
     console.log('Sauvegarde nouvelle entete ensemble reg')
     try {
-        const { id } = req.params;
+        const { id } = req.validated?.params as {id:number};
 
-        const result= await deleteRegSetAssocServ(Number(id))
+        const result= await deleteRegSetAssocServ(id)
         if (result.success){
 
             res.status(200).json(result);
@@ -287,10 +320,12 @@ export const supprimeAssocEnsembleReglement: RequestHandler<ParamsAssocEnsReg> =
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const infoPourGraphiques: RequestHandler<void> = async (req, res,next ) => {
+export const infoPourGraphiques: RequestHandler = async (req, res,next ) => {
+
     console.log('Getting information for graphs')
     try {
-        const json_in= JSON.stringify(req.body)
+        const body = req.validated?.body
+        const json_in= JSON.stringify(body)
         const out= await getChartInfoServ(json_in)
         if (out.success===true){
             res.status(200).json(out)
