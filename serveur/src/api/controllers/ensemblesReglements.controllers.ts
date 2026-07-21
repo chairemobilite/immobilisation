@@ -16,6 +16,7 @@ import {
 import { ParamsTerritoire } from "@localTypes/historique.types";
 import { ParamsRole } from "@localTypes/role.types";
 import { 
+    copyRegSetServ,
     deleteRegSetAssocServ, 
     deleteRegSetServ, 
     getChartInfoServ, 
@@ -31,13 +32,18 @@ import {
 } from "../services/ensembleReglements.services";
 import  { RequestHandler, Response, Request, NextFunction } from "express";
 
+
 /**
  * controller that gets relevant reg set headers based on query parameters
  * @param req request format from express
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const obtiensEntetesEnsemblesReglements: RequestHandler = async (req: Request, res: Response,next:NextFunction): Promise<void> => {
+export const obtiensEntetesEnsemblesReglements: RequestHandler = async (
+    req: Request, 
+    res: Response, 
+    next:NextFunction
+): Promise<void> => {
     console.log('Serveur - Obtention entetes ensembles reglements')
     try {
         const { 
@@ -78,7 +84,11 @@ export const obtiensEntetesEnsemblesReglements: RequestHandler = async (req: Req
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const obtiensEnsembleReglementCompletParId: RequestHandler = async (req: Request, res: Response, next:NextFunction): Promise<void> => {
+export const obtiensEnsembleReglementCompletParId: RequestHandler = async (
+    req: Request, 
+    res: Response, 
+    next:NextFunction
+): Promise<void> => {
     console.log('Serveur - Obtention ensembles reglements complets')
     try {
         const { id } = req.validated?.params as {id:number[]};
@@ -99,7 +109,11 @@ export const obtiensEnsembleReglementCompletParId: RequestHandler = async (req: 
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const obtiensReglementsPourEnsReg: RequestHandler = async (req:Request, res:Response,next): Promise<void> => {
+export const obtiensReglementsPourEnsReg: RequestHandler = async (
+    req:Request, 
+    res:Response, 
+    next: NextFunction
+): Promise<void> => {
     console.log('Serveur - Obtention entetes de reglements associés à un ensemble de règlements')
     try {
         const { id } = req.validated?.params as {id:number};
@@ -119,7 +133,11 @@ export const obtiensReglementsPourEnsReg: RequestHandler = async (req:Request, r
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const obtiensEntetesParTerritoire: RequestHandler<ParamsTerritoire> = async (req:Request, res:Response, next:NextFunction): Promise<void> => {
+export const obtiensEntetesParTerritoire: RequestHandler<ParamsTerritoire> = async (
+    req:Request, 
+    res:Response, 
+    next:NextFunction
+): Promise<void> => {
     console.log('Serveur - Obtention entete reglement par territoire')
 
     try {
@@ -139,7 +157,11 @@ export const obtiensEntetesParTerritoire: RequestHandler<ParamsTerritoire> = asy
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const obtiensEnsRegCompletParRole: RequestHandler<ParamsRole> = async (req:Request, res:Response, next:NextFunction): Promise<void> => {
+export const obtiensEnsRegCompletParRole: RequestHandler<ParamsRole> = async (
+    req:Request, 
+    res:Response, 
+    next:NextFunction
+): Promise<void> => {
     console.log('obtention ens-reg par role - Implémentation incomplète')
 
     try {
@@ -159,7 +181,11 @@ export const obtiensEnsRegCompletParRole: RequestHandler<ParamsRole> = async (re
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const nouvelleEnteteEnsembleReglement: RequestHandler = async (req, res, next): Promise<void> => {
+export const nouvelleEnteteEnsembleReglement: RequestHandler = async (
+    req:Request, 
+    res:Response, 
+    next:NextFunction
+): Promise<void> => {
     console.log('Sauvegarde nouvelle entete ensemble reg')
     try {
         const { 
@@ -189,7 +215,11 @@ export const nouvelleEnteteEnsembleReglement: RequestHandler = async (req, res, 
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const supprimeEnsembleReglement: RequestHandler<ParamsEnsReg> = async (req, res,next) => {
+export const supprimeEnsembleReglement: RequestHandler<ParamsEnsReg> = async (
+    req: Request, 
+    res: Response, 
+    next: NextFunction
+):Promise<void> => {
     console.log('Sauvegarde nouvelle entete ensemble reg')
     try {
         const { id } = req.validated?.params as {id:number};
@@ -209,7 +239,11 @@ export const supprimeEnsembleReglement: RequestHandler<ParamsEnsReg> = async (re
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const modifieEnteteEnsembleReglement: RequestHandler<ParamsEnsReg> = async (req, res,next ) => {
+export const modifieEnteteEnsembleReglement: RequestHandler<ParamsEnsReg> = async (
+    req:Request, 
+    res:Response, 
+    next: NextFunction 
+):Promise<void> => {
 
     try {
         const { id } = req.validated?.params as {id:number}
@@ -238,7 +272,11 @@ export const modifieEnteteEnsembleReglement: RequestHandler<ParamsEnsReg> = asyn
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const nouvelleAssociationEnsembleReglement: RequestHandler = async (req, res,next) => {
+export const nouvelleAssociationEnsembleReglement: RequestHandler = async (
+    req: Request, 
+    res: Response, 
+    next: NextFunction
+):Promise<void> => {
     console.log('Sauvegarde nouvelle association ensemble reg')
     try {
         const { 
@@ -267,7 +305,11 @@ export const nouvelleAssociationEnsembleReglement: RequestHandler = async (req, 
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const modifieAssocEnsembleReglement: RequestHandler<ParamsEnsReg> = async (req, res,next) => {
+export const modifieAssocEnsembleReglement: RequestHandler<ParamsEnsReg> = async (
+    req: Request, 
+    res: Response, 
+    next: NextFunction
+):Promise<void> => {
     try {
 
         const { id } = req.validated?.params as {id:number};
@@ -297,7 +339,11 @@ export const modifieAssocEnsembleReglement: RequestHandler<ParamsEnsReg> = async
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const supprimeAssocEnsembleReglement: RequestHandler<ParamsAssocEnsReg> = async (req, res,next) => {
+export const supprimeAssocEnsembleReglement: RequestHandler<ParamsAssocEnsReg> = async (
+    req: Request, 
+    res: Response, 
+    next: NextFunction
+):Promise<void> => {
     console.log('Sauvegarde nouvelle entete ensemble reg')
     try {
         const { id } = req.validated?.params as {id:number};
@@ -320,7 +366,11 @@ export const supprimeAssocEnsembleReglement: RequestHandler<ParamsAssocEnsReg> =
  * @param res response format form express
  * @param next next function execute in the express stack
  */
-export const infoPourGraphiques: RequestHandler = async (req, res,next ) => {
+export const infoPourGraphiques: RequestHandler = async (
+    req: Request, 
+    res: Response, 
+    next: NextFunction 
+) => {
 
     console.log('Getting information for graphs')
     try {
@@ -337,5 +387,33 @@ export const infoPourGraphiques: RequestHandler = async (req, res,next ) => {
     }
     
 };
+/**
+ * Controller used to copy regulation sets summarily. points to
+ * relevant service
+ * @param req request format from express. The expected data is checked through the
+ * validator and contains the id of the regulation set to copy see the router to dig 
+ * through what input is expected
+ * @param res response format form express. the body is specified based the return of
+ * copyRegSetServ which is a complete regulation set (header, associations and land uses)
+ * @param next next function execute in the express stack
+ */
+export const createRegSetCopy:RequestHandler=async (
+    req:Request, 
+    res:Response, 
+    next:NextFunction
+):Promise<void>=>{
+    try{
 
-
+        const {id}=req.validated?.params as {id:number};
+        const out = await copyRegSetServ(id)
+        if (out.success===true){
+            res.status(200).json(out)
+        } else {
+            console.error(`Copying reg set ${id} failed. Error message: ${out.message}`)
+            res.status(500).json(out)
+        }
+    } catch(err:any) {
+        console.error('Error',err.message)
+        res.status(500).json({success:false,message:err.message})
+    }
+}
