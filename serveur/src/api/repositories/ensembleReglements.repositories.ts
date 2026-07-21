@@ -597,3 +597,75 @@ export function RunJoinQueriesToPythonOutputRepo(
     }));
     return output
 }
+/**
+ * Copies the header of the parking regulation set
+ * @param client pg pool client to use for the transaction
+ * @param idToCopy the identifier of the regulation set to copy
+ * @returns the newly created header
+ */
+export async function RunDuplicateRegSetHeaderRepo(
+    client: PoolClient, 
+    idToCopy: number
+):Promise<DbEnteteEnsembleReglement> {
+    const query = `
+        INSERT INTO public.ensembles_reglements_stat(
+            description_er,
+            date_debut_er,
+            date_fin_er
+        )
+        SELECT
+            CONCAT(description_er, ' - copie') AS description_er,
+            date_debut_er,
+            date_fin_er
+        FROM ensembles_reglements_stat
+        WHERE id_er = $1
+        RETURNING *;
+    `;
+    const resultAssoc = await client.query<DbEnteteEnsembleReglement>(query, [idToCopy]);
+    return resultAssoc.rows[0]
+}
+/**
+ * copies the associations of the copied reg set but changes the identifier
+ * @param client a pg poolClient to use to perform the operation
+ * @param idToCopy id of the reg set to copy
+ * @param newId id of the newly created reg set
+ * @returns the newly create assignments
+ */
+export async function RunDuplicateRegSetAssocRepo(
+    client:PoolClient,
+    idToCopy:number,
+    newId:number
+):Promise<DbAssociationReglementUtilSol[]>{
+    const query=`
+        With inserted as(
+        INSERT INTO public.association_er_reg_stat(id_er,cubf,id_reg_stat)
+        SELECT
+            $1 as id_er,
+            cubf,
+            id_reg_stat
+        from public.association_er_reg_stat
+        where id_er=$2
+        RETURNING * )
+        Select * from inserted
+        order by cubf::text asc;
+      `;
+    const resultAssoc = await client.query<DbAssociationReglementUtilSol>(query, [newId,idToCopy]);
+    return resultAssoc.rows
+}
+/**
+ * runs the query used to obtain the data
+ * @param client the pg pool client to use to run the queries
+ * @returns the entire land use table which is an id (cubf) and 
+ * a description
+ */
+export async function RunGetAllLandUsesQuery(
+    client:PoolClient
+):Promise<DbUtilisationSol[]>{
+    const query_3 = `
+            SELECT *
+            FROM public.cubf
+            ORDER BY cubf ASC
+          `
+    const resultUtilSol = await client.query<DbUtilisationSol>(query_3);
+    return resultUtilSol.rows
+}
