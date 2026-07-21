@@ -32,6 +32,9 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 
 // Start server
 app.listen(port, async () => {
+  // TODO: move these lines to the createPool function once all the routes
+  // have been migrated over to that methodology(rather than passing
+  // the pool through the props.See PR # 112
   console.log(`Server running at http://localhost:${port}`);
   console.log(`Server user info:${dbConfig.database.user}`)
   console.log(`Server address info:${dbConfig.database.host}`)

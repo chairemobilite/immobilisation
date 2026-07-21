@@ -30,7 +30,7 @@ export const createApiRouter = (pool: Pool) => {
     router.use('/inventaire',creationRouteurInventaire(pool));
     router.use('/territoire',creationRouteurTerritoires(pool));
     router.use('/reglements',creationRouteurReglements(pool));
-    router.use('/ens-reg',creationRouteurEnsemblesReglements(pool));
+    router.use('/ens-reg',creationRouteurEnsemblesReglements());
     router.use('/cadastre',creationRouteurCadastre(pool))
     router.use('/ana-par-quartier',creationRouteurAnalyseParQuartiers(pool))
     router.use('/PAV',creationRouteurProfileAccumVehiculeQuartier(pool))
