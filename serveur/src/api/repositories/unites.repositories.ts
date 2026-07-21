@@ -1,5 +1,5 @@
 import { Pool, PoolClient } from "pg"
-import { RepoResponse } from "database.types"
+import { RepoResponse } from "@localTypes/database.types"
 
 export interface objetRequeteSQL{
     requete:string,

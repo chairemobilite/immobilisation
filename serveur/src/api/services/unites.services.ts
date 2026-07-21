@@ -1,4 +1,4 @@
-import { RepoResponse } from 'database.types'
+import { RepoResponse } from '@localTypes/database.types'
 import * as repo from '../repositories/unites.repositories'
 import { Pool } from 'pg'
 

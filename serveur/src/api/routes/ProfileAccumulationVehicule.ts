@@ -1,7 +1,7 @@
 import { Router, Request, Response, RequestHandler } from 'express';
 import { Pool } from 'pg';
-import { ParamsTerritoire } from 'historique.types';
-import { ParamsQuartier } from 'secteursAnalyse.types';
+import { ParamsTerritoire } from '@localTypes/historique.types';
+import { ParamsQuartier } from '@localTypes/secteursAnalyse.types';
 import path from 'path';
 import { spawn } from 'child_process';
 // Types pour les requêtes

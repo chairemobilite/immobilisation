@@ -1,6 +1,6 @@
 import { Router, Request, Response, RequestHandler } from 'express';
 import { Pool } from 'pg';
-import { DbTerritoire,ParamsPeriode } from 'historique.types';
+import { DbTerritoire,ParamsPeriode } from '@localTypes/historique.types';
 // Types pour les requêtes
 import { Polygon, MultiPolygon } from 'geojson';
 import { serviceMetAJourTerritoiresPeriodes,

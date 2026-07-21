@@ -15,10 +15,8 @@
     "inlineSources": false,
     "baseUrl": ".",
     "paths": {
-      "*": [
-        "node_modules/*",
-        "src/types/*"
-      ]
+      "@localTypes":["src/types/index.ts"],
+      "@localTypes/*":["src/types/*"]
     },
     "typeRoots": [
       "./node_modules/@types",

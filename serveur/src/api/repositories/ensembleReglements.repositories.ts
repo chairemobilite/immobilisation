@@ -10,13 +10,18 @@ set information.
 
 
 
-import { DbAssociationReglementUtilSol, DbEnteteEnsembleReglement } from "ensembleReglements.types";
-import { unit_reg_reg_set_land_use_output, unit_reg_reg_set_land_use_query } from "inventaire.types";
+import { 
+    DbAssociationReglementUtilSol, 
+    DbEnteteEnsembleReglement 
+} from "@localTypes/ensembleReglements.types";
+import { 
+    unit_reg_reg_set_land_use_output, 
+    unit_reg_reg_set_land_use_query 
+} from "@localTypes/inventaire.types";
 import {
     PoolClient
 } from "pg";
-import { DbEnteteReglement, DbReglementComplet } from "reglements.types";
-import { DbUtilisationSol } from "utilisationDuSol.types";
+import { DbUtilisationSol } from "@localTypes/utilisationDuSol.types";
 import { spawn } from "child_process";
 import path from "path";
 

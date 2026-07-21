@@ -9,10 +9,12 @@ actually query the database
 */
 
 
-import { DbAssociationReglementUtilSol, DbEnteteEnsembleReglement } from 'ensembleReglements.types'
+import { 
+    DbAssociationReglementUtilSol, 
+    DbEnteteEnsembleReglement 
+} from '@localTypes/ensembleReglements.types'
 import pool from '../../db/createPool'
 import { RunChartsInfoPythonRepo, RunCreateNewRegSetHeaderRepo, RunCreateRegSetAssocRepo, RunDeleteRegSetAssocRepo, RunDeleteRegSetRepo, RunGetAssociatedInformationRepo, RunGetRegSetByTaxDataRepo, RunGetRegSetHeadersFromTerritoryRepo, RunJoinQueriesToPythonOutputRepo, RunModifyRegSetAssocRepo, parsePythonOuputJSONRepo, RunGetRegsForRegSetRepo, RunObtainRegSetHeadersQueriesRepo, RunObtainSpecificRegSetQueriesRepo, RunUpdateRegSetRepo } from '../repositories/ensembleReglements.repositories'
-import { DbUtilisationSol } from 'utilisationDuSol.types'
 
 
 /**
