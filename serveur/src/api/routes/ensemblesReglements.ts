@@ -23,6 +23,18 @@ import {
     supprimeAssocEnsembleReglement,
     supprimeEnsembleReglement
 } from '../controllers/ensemblesReglements.controllers';
+import { 
+    DeleteItemsSchema, 
+    GetFullRegSetsSchema, 
+    GetInfoForChartsSchema, 
+    GetRegSetsByTaxIdSchema, 
+    GetRegSetsQuerySchema, 
+    ModifyLandUseToRuleAssignSchema, 
+    ModifyRegSetHeaderSchema, 
+    PostLandUseToRuleAssignSchema, 
+    PostRegSetHeaderSchema 
+} from '../validators/ensembleReglement.validator';
+import { validate } from '../middleware/validate';
 
 
 /**
@@ -36,18 +48,18 @@ export const creationRouteurEnsemblesReglements = (): Router => {
 
     // Routes
     // basiques
-    router.delete('/:id', supprimeEnsembleReglement)
-    router.get('/complet/:id', obtiensEnsembleReglementCompletParId)
-    router.get('/entete', obtiensEntetesEnsemblesReglements);
-    router.post('/entete', nouvelleEnteteEnsembleReglement)
-    router.put('/entete/:id', modifieEnteteEnsembleReglement)
-    router.post('/assoc', nouvelleAssociationEnsembleReglement)
-    router.put('/assoc/:id', modifieAssocEnsembleReglement)
-    router.delete('/assoc/:id', supprimeAssocEnsembleReglement)
+    router.delete('/:id',validate(DeleteItemsSchema), supprimeEnsembleReglement)
+    router.get('/complet/:id',validate(GetFullRegSetsSchema), obtiensEnsembleReglementCompletParId)
+    router.get('/entete',validate(GetRegSetsQuerySchema), obtiensEntetesEnsemblesReglements);
+    router.post('/entete',validate(PostRegSetHeaderSchema), nouvelleEnteteEnsembleReglement)
+    router.put('/entete/:id', validate(ModifyRegSetHeaderSchema),modifieEnteteEnsembleReglement)
+    router.post('/assoc', validate(PostLandUseToRuleAssignSchema),nouvelleAssociationEnsembleReglement)
+    router.put('/assoc/:id',validate(ModifyLandUseToRuleAssignSchema), modifieAssocEnsembleReglement)
+    router.delete('/assoc/:id',validate(DeleteItemsSchema), supprimeAssocEnsembleReglement)
     // ancilaires
-    router.get('/regs-associes/:id', obtiensReglementsPourEnsReg);
-    router.get('/entete-par-territoire/:id', obtiensEntetesParTerritoire)
-    router.get('/par-role/:ids', obtiensEnsRegCompletParRole)
-    router.post('/informations-pour-graphique', infoPourGraphiques)
+    router.get('/regs-associes/:id',validate(DeleteItemsSchema), obtiensReglementsPourEnsReg);
+    router.get('/entete-par-territoire/:id',validate(DeleteItemsSchema), obtiensEntetesParTerritoire)
+    router.get('/par-role/:ids', validate(GetRegSetsByTaxIdSchema),obtiensEnsRegCompletParRole)
+    router.post('/informations-pour-graphique',validate(GetInfoForChartsSchema), infoPourGraphiques)
     return router;
 };
