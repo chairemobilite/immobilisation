@@ -50,6 +50,7 @@ const EnsemblesReglements: React.FC = () => {
     const [editedAssignId,setEditedAssignId] = useState<number>(-1);
     const [newAssignModalOpen,setNewAssignModalOpen] = useState<boolean>(false);
     const [AllRegHeaders,setAllRegHeaders] = useState<entete_reglement_stationnement[]>([]);
+    const [duplicateERsModalOpen,setDuplicateERsModalOpen]=useState<boolean>(false)
     const [searchParams] = useSearchParams();
     
     useEffect(() => {
@@ -87,6 +88,7 @@ const EnsemblesReglements: React.FC = () => {
                     defEditionCorpsEnCours={setAssignEditFlag}
                     ancienEnsRegComplet={oldFullRegSet}
                     defAncienEnsRegComplet={setOldFullRegSet}
+                    setDuplicationModalOpen={setDuplicateERsModalOpen}
                 />
 
                 {/* The panel on the right for detailed edition of regulation set */}
@@ -128,6 +130,12 @@ const EnsemblesReglements: React.FC = () => {
                     defTousReglement={setAllRegHeaders}
                     reglementVisu={pertinentRegs}
                     defReglementVisu={setPertinentRegs}
+                />
+                <ModalDuplicationEnsReg
+                    modalOpen={duplicateERsModalOpen}
+                    setModalOpen={setDuplicateERsModalOpen}
+                    setRegSetCurrent={setFullRegSet}
+                    setRegSetList={setRegSetHeaders}
                 />
             </div>
         </div>

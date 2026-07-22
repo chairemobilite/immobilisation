@@ -145,7 +145,22 @@ const TableListeEnsReg: React.FC<TableEnteteEnsembleProps> = (props) => {
             Ensembles Règlements
             </Typography>
             
-            
+            <div
+                style={{padding:10}}
+            >
+                <Button
+                onClick={()=>props.setDuplicationModalOpen(true)}
+                variant='outlined'
+                fullWidth={true}
+                sx={{
+                    gap:2,
+                    padding:'10px',
+                    
+                }}
+            >
+                Démarrer duplication Ens reg
+            </Button>
+            </div>
             <div style={{padding:10}}>
                 <Button
                     onClick={gestBoutonAjout}

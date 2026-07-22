@@ -1,10 +1,27 @@
+/*
+Copyright (c) 2026 Paul Charbonneau
+
+Licensed under the MIT License.
+See the LICENSE file in the project root for license information.
+ 
+Service that launches queries to the backend to retrieve data
+*/
+
+
+
 import axios,{ AxiosResponse } from 'axios';
-import {ReponseEnteteEnsembleReglementStationnement,ReponseEnsembleReglementComplet, ReponseEntetesEnsemblesReglement, ReponseEntetesReglements, ReponseComboERsRoleFoncier, ReponseAssociationEnsembleReglement,ReponseUnitesGraph, ReponseDataGraphique} from '../types/serviceTypes';
+import {ReponseEnteteEnsembleReglementStationnement,ReponseEnsembleReglementComplet, ReponseEntetesEnsemblesReglement, ReponseEntetesReglements, ReponseComboERsRoleFoncier, ReponseAssociationEnsembleReglement,ReponseUnitesGraph, ReponseDataGraphique, ApiResponse} from '../types/serviceTypes';
 import api from './api';
-import { association_util_reglement, entete_ensembles_reglement_stationnement, ProprietesRequetesER } from '../types/DataTypes';
+import { association_util_reglement, ensemble_reglements_stationnement, entete_ensembles_reglement_stationnement, ProprietesRequetesER } from '../types/DataTypes';
 
-
+/**
+ * 
+ */
 class ServiceEnsemblesReglements {
+    /**
+     * basic get function that returns all the available datasets
+     * @returns all the available regulations sets in the database
+     */
     async chercheTousEntetesEnsemblesReglements():Promise<ReponseEntetesEnsemblesReglement> {
         try {
             const response: AxiosResponse<ReponseEntetesEnsemblesReglement> = await api.get(`/ens-reg/entete`);
@@ -22,6 +39,17 @@ class ServiceEnsemblesReglements {
         }
     } 
 
+    /**
+     * function to query backend for relevant regulation sets
+     * @param paramsRequetes object with following fields: 
+     *      dateDebutAvant?:number|null, 
+     *      dateDebutApres?:number|null, 
+     *      dateFinAvant?:number|null,  
+     *      dateFinApres?:number|null, 
+     *      descriptionLike?:string,        
+     *      idER?:number|number[]
+     * @returns an array of regulation set headers
+     */
     async chercheEntetesParPropriete(paramsRequetes:ProprietesRequetesER):Promise<ReponseEntetesEnsemblesReglement>{
         try {
             let query:string = `/ens-reg/entete`
@@ -291,6 +319,23 @@ class ServiceEnsemblesReglements {
                 console.error('Unexpected Error:', error);
             }
             throw error; // Re-throw if necessary
+        }
+    }
+
+    async copyRegulationSet(regSetToCopy:number){
+        try{
+            const response:AxiosResponse<ApiResponse<ensemble_reglements_stationnement>> = await api.post(`/ens-reg/copy/${regSetToCopy}`)
+            const data_res = response.data.data;
+            return{success:response.data.success,data:data_res};
+        }catch(error:any){
+            if (axios.isAxiosError(error)) {
+                console.error('Axios Error:', error.response?.data);
+                console.error('Axios Error Status:', error.response?.status);
+                console.error('Axios Error Data:', error.response?.data);
+            } else {
+                console.error('Unexpected Error:', error);
+            }
+            return{success:false}
         }
     }
 }
