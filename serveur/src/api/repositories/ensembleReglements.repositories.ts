@@ -139,29 +139,32 @@ export async function RunObtainSpecificRegSetQueriesRepo(client: PoolClient, id:
     // Dynamically create placeholders for the query (e.g., $1, $2, $3, ...)
     if (id.length>0){
         const placeholders = id.map((_: number, index: number) => `$${index + 1}`).join(',');
-
+        // Obtain the headers for the identified parking regulation set
         const query_1 = `
                 SELECT *
                 FROM public.ensembles_reglements_stat
                 WHERE id_er IN (${placeholders})
                 ORDER BY id_er ASC
             `;
+        // Obtain the assignments of parking regulations to land use and sort by land use code
 
     const result_header = await client.query<DbEnteteEnsembleReglement>(query_1, id);
     const query2 = `
             SELECT id_assoc_er_reg, id_reg_stat,cubf,id_er
             FROM public.association_er_reg_stat
             WHERE id_er IN (${placeholders})
-            ORDER BY id_assoc_er_reg  ASC
+            ORDER BY cubf::text ASC
           `
     const result_rules = await client.query<DbAssociationReglementUtilSol>(query2, id);
-
+        
+        // obtain all the land use code ids and descriptions
         const query_3 = `
                 SELECT *
                 FROM public.cubf
                 ORDER BY cubf ASC
             `
         const resulUtilSol = await client.query<DbUtilisationSol>(query_3);
+        // package the result in the correct format
         return {
             entete_all: result_header.rows,
             assoc_util_reg_all: result_rules.rows,
