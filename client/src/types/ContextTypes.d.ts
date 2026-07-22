@@ -1,5 +1,7 @@
 import { LatLng } from "leaflet";
 
+type ThemeMode = 'light' | 'dark';
+
 export interface donneesCarteDeFond{
     id:number,
     description:string,
@@ -12,6 +14,9 @@ export type ContexteImmobilisationType = {
     optionCartoChoisie: number;
     changerCarto: (idAUtiliser: number) => void;
     optionsCartos: donneesCarteDeFond[],
+    mode:ThemeMode,
+    toggleTheme: () => void;
+    setTheme: (mode: ThemeMode) => void;
 };
 
 export type FournisseurContexteProps = {

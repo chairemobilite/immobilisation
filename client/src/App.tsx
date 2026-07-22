@@ -21,7 +21,6 @@ import VersementEnqueteOD from './pages/VersementEnqueteOD';
 import SommaireVersement from './pages/SommaireVersement';
 import VersementCUBF from './pages/VersementCUBF';
 import CreationOperateurs from './pages/CreationOperateurs';
-
 const app: React.FC = () => {
   return (
     <FournisseurContexte>

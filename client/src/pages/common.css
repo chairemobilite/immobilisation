@@ -1,5 +1,4 @@
 body,html{
-    background-color: #121212;
     color: #ffffff;
     font-family: Arial, sans-serif;
     margin: 0;
@@ -83,9 +82,6 @@ body,html{
     align-items: center;
     justify-content: space-between;
     padding: 10px 20px;
-    background-color: #1f1f1f;
-    border-bottom: 2px solid #333;
-    color: #ffffff;
     width:100%;
     z-index:1000;
 }
@@ -93,24 +89,19 @@ body,html{
 .menu-bar h1 {
     margin: 0;
     font-size: 24px;
-    color: #ffffff;
 }
 
 .menu-links {
     display: flex;
     gap: 15px;
-    color:white;
     justify-content: center; 
     flex-grow: 1;
     padding:10px;
 }
-.menu-links:hover{
-    background-color: blue;
-}
+
 
 .menu-links a {
     text-decoration: none;
-    color: #333;
     font-size: 18px;
     transition: color 0.3s ease;
 }
@@ -122,27 +113,15 @@ body,html{
 
 /* Button styling */
 .nav-button {
-  background-color: #121212 !important;
-  color: #ffffff !important;
   text-transform: none; /* keeps text normal case */
 }
 
 /* Dropdown menu box */
 .nav-menu {
-  background-color: #121212 !important;
-  color: #ffffff !important;
   border-radius: 3px;
 }
 
-/* Menu items */
-.nav-menu .MuiMenuItem-root {
-  color: #ffffff !important;
-}
-
-.nav-menu .MuiMenuItem-root:hover {
-  background-color: #ffffff !important;
-  color: #121212 !important;
-}
+/* Menu items
 /* ---------------------------------------------------------------------------------------- */
 /* --------------------------------- Form defaults -----------------------------------------*/
 /* ---------------------------------------------------------------------------------------- */
