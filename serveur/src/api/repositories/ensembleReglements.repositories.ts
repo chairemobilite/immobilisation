@@ -151,7 +151,7 @@ export async function RunObtainSpecificRegSetQueriesRepo(client: PoolClient, id:
             SELECT id_assoc_er_reg, id_reg_stat,cubf,id_er
             FROM public.association_er_reg_stat
             WHERE id_er IN (${placeholders})
-            ORDER BY id_assoc_er_reg  ASC
+            ORDER BY cubf::text ASC
           `
     const result_rules = await client.query<DbAssociationReglementUtilSol>(query2, id);
 
