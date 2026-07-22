@@ -1,13 +1,13 @@
-import MenuBar from "../components/MenuBar";
+import MenuBar from "../components/menus/MenuBar";
 import React,{useState} from 'react';
 import './versementRole.css';
 import './common.css';
-import MenuManipCadastre from "../components/MenuVersementCadastre";
-import ModalVersementCadastre from "../components/ModalVersementCadastre";
-import CarteVisionnementCadastre from "../components/CarteVisionnementCadastre";
-import ModalVersementGen from "../components/ModalVersement";
+import MenuManipCadastre from "../components/menus/MenuVersementCadastre";
+import ModalVersementCadastre from "../components/uploadComponents/ModalVersementCadastre";
+import CarteVisionnementCadastre from "../components/maps/CarteVisionnementCadastre";
+import ModalVersementGen from "../components/uploadComponents/ModalVersement";
 import { EquivalenceVersementCarto } from "../types/DataTypes";
-import CarteVisionnementRole from "../components/CarteVisionnementRole";
+import CarteVisionnementRole from "../components/maps/CarteVisionnementRole";
 import { ServiceGeoJson } from "../services/serviceGeoJson";
 
 const VersementRole:React.FC =() =>{

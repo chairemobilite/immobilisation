@@ -1,20 +1,20 @@
-import MenuBar from '../components/MenuBar';
+import MenuBar from '../components/menus/MenuBar';
 import { useState, useEffect, useRef } from 'react';
 import L, { LatLngExpression } from 'leaflet';
-import TableInventaire from '../components/TableInventaire';
+import TableInventaire from '../components/tables/TableInventaire';
 import { ensemble_reglements_stationnement, entete_ensembles_reglement_stationnement, inventaire_stationnement, quartiers_analyse, reglement_complet } from '../types/DataTypes';
 import { serviceQuartiersAnalyse, } from '../services/serviceQuartiersAnalyse';
 import { serviceInventaire } from '../services/serviceInventaire';
 import { FeatureCollection, Geometry, Feature } from 'geojson';
 import { lotCadastralGeoJsonProperties, roleFoncierGeoJsonProps, lotCadastralAvecBoolInvGeoJsonProperties } from '../types/DataTypes';
-import CarteInventaire from '../components/carteInventaire';
-import TableRevueInventaire from '../components/RevueInventaire';
+import CarteInventaire from '../components/maps/carteInventaire';
+import TableRevueInventaire from '../components/panels/RevueInventaire';
 import './visualisationInventaire.css';
 import './common.css';
-import CompoModifInventaire from '../components/modifInventaire';
-import ComparaisonInventaireQuartier from '../components/ComparaisonInventaireQuartier';
-import MenuInventaire from '../components/MenuInventaire';
-import ModalRecomputeInventaire from '../components/ModalRecomputeInventaire';
+import CompoModifInventaire from '../components/panels/modifInventaire';
+import ComparaisonInventaireQuartier from '../components/panels/ComparaisonInventaireQuartier';
+import MenuInventaire from '../components/menus/MenuInventaire';
+import ModalRecomputeInventaire from '../components/modals/ModalRecomputeInventaire';
 
 const position: LatLngExpression = [45.5017, -73.5673]; // Montreal coordinates
 

@@ -1,10 +1,10 @@
-import MenuBar from "../components/MenuBar";
+import MenuBar from "../components/menus/MenuBar";
 import React,{useState} from 'react';
 import './versementCadastre.css';
 import './common.css';
-import MenuManipCadastre from "../components/MenuVersementCadastre";
-import ModalVersementCadastre from "../components/ModalVersementCadastre";
-import CarteVisionnementCadastre from "../components/CarteVisionnementCadastre";
+import MenuManipCadastre from "../components/menus/MenuVersementCadastre";
+import ModalVersementCadastre from "../components/uploadComponents/ModalVersementCadastre";
+import CarteVisionnementCadastre from "../components/maps/CarteVisionnementCadastre";
 
 const VersementCadastre:React.FC =() =>{
     const [modalSelectionCadastreOuvert,defModalSelectionCadastreOuvert] = useState<boolean>(false);

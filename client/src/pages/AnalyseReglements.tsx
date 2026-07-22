@@ -1,10 +1,10 @@
 import React,{useState,useEffect} from 'react';
-import MenuBar from '../components/MenuBar';
+import MenuBar from '../components/menus/MenuBar';
 import './analyseReglements.css'
-import GraphiqueReglements from '../components/GraphiqueReglement';
+import GraphiqueReglements from '../components/charts/GraphiqueReglement';
 import { entete_ensembles_reglement_stationnement } from '../types/DataTypes';
 import { serviceEnsemblesReglements } from '../services';
-import ControlAnaReg from '../components/ControlAnaReg'
+import ControlAnaReg from '../components/menus/ControlAnaReg'
 
 const AnalyseReglements:React.FC = () =>{
     const [nGraphiques,defNGraphiques] = useState<number>(4);

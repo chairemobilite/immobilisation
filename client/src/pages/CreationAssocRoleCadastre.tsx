@@ -1,10 +1,10 @@
 import{Dispatch, FC, SetStateAction, useState} from 'react'
-import MenuBar from '../components/MenuBar'
+import MenuBar from '../components/menus/MenuBar'
 import './creationAssocRoleCadastre.css';
 import './common.css'
-import CarteAssocRoleCadastre from '../components/CarteAssocRoleCadastre';
-import MenuAssociationCadastreRole from '../components/MenuAssociationCadastreRole';
-import TableRevueInventaire from '../components/RevueInventaire';
+import CarteAssocRoleCadastre from '../components/maps/CarteAssocRoleCadastre';
+import MenuAssociationCadastreRole from '../components/menus/MenuAssociationCadastreRole';
+import TableRevueInventaire from '../components/panels/RevueInventaire';
 import { Feature, FeatureCollection, Geometry } from 'geojson';
 import { lotCadastralAvecBoolInvGeoJsonProperties, lotCadastralGeoJsonProperties, roleFoncierGeoJsonProps } from '../types/DataTypes';
 

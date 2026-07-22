@@ -1,16 +1,16 @@
 import React,{useEffect,useState} from 'react';
-import MenuBar from '../components/MenuBar';
+import MenuBar from '../components/menus/MenuBar';
 
-import ModalVersementSecAnalyse from '../components/ModalVersementSecAnalyse';
+import ModalVersementSecAnalyse from '../components/uploadComponents/ModalVersementSecAnalyse';
 import './versementSecAnalyse.css';
 import './common.css';
 import { quartiers_analyse } from '../types/DataTypes';
 import { FeatureCollection,Geometry } from 'geojson';
-import MenuManipSecAnalyse from '../components/MenuManipSecAnalyse';
-import TableSecAnalyse from '../components/TableSecAnalyse';    
+import MenuManipSecAnalyse from '../components/menus/MenuManipSecAnalyse';
+import TableSecAnalyse from '../components/tables/TableSecAnalyse';    
 import { NouveauAncienSecteurAnalyse } from '../types/InterfaceTypes';
 import { serviceQuartiersAnalyse } from '../services';
-import CarteSecAnalyse from '../components/CarteSecAnalyse';
+import CarteSecAnalyse from '../components/maps/CarteSecAnalyse';
 import { LatLngExpression } from 'leaflet';
 const VersementSecAnalyse: React.FC = () => {
     const [modal, setModal] = React.useState<boolean>(false);

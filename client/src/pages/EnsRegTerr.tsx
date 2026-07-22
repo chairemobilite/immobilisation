@@ -1,13 +1,13 @@
 import React,{useState,useEffect,useRef} from 'react';
-import MenuBar from '../components/MenuBar';
-import EnsRegTerrGantt from '../components/EnsRegTerrGantt';
+import MenuBar from '../components/menus/MenuBar';
+import EnsRegTerrGantt from '../components/gantt/EnsRegTerrGantt';
 import './ensregterr.css'
 import './common.css'
 import { association_territoire_entete_ensemble_reglement, entete_ensembles_reglement_stationnement, periode, territoireGeoJsonProperties } from '../types/DataTypes';
 import GeoJSON,{FeatureCollection,Geometry} from 'geojson';
-import ControlEnsRegTerr from '../components/ControlEnsRegTerr';
+import ControlEnsRegTerr from '../components/menus/ControlEnsRegTerr';
 import { serviceHistorique } from '../services';
-import CarteEnsRegTerr from '../components/carteEnsRegTerr';
+import CarteEnsRegTerr from '../components/maps/carteEnsRegTerr';
 import { LatLngExpression } from 'leaflet';
 
 const EnsRegTerritoire: React.FC =()=>{

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import MenuBar from '../components/MenuBar';
+import MenuBar from '../components/menus/MenuBar';
 import { colonnes_possibles_conversion, unites_reglement_stationnement } from '../types/DataTypes';
 import { serviceReglements,serviceUnites } from '../services';
-import ListeUnitesPossibles from '../components/ListeUnitesPossibles';
-import PanneauModificationUnites from '../components/PanneauModificationUnites';
+import ListeUnitesPossibles from '../components/lists/ListeUnitesPossibles';
+import PanneauModificationUnites from '../components/panels/PanneauModificationUnites';
 import './ModificationUnites.css'
 import serviceValidation from '../services/serviceValidation';
 

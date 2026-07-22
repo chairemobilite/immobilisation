@@ -1,11 +1,11 @@
 import { FC, useState } from "react"
-import MenuBar from "../components/MenuBar"
-import TableVisuCUBF from "../components/TableVisuCUBFVerse"
+import MenuBar from "../components/menus/MenuBar"
+import TableVisuCUBF from "../components/tables/TableVisuCUBFVerse"
 import './versementCUBF.css'
 import './common.css'
-import MenuBarVerseCUBF from "../components/MenuBarCUBFVerse"
+import MenuBarVerseCUBF from "../components/menus/MenuBarCUBFVerse"
 import { EquivalenceVersementCarto, utilisation_sol } from "../types/DataTypes"
-import ModalVersementOD from "../components/ModalVersementOD"
+import ModalVersementOD from "../components/uploadComponents/ModalVersementOD"
 import { ServiceFichierCSV } from "../services/serviceFichierCSV"
 
 const VersementCUBF:FC=()=>{
