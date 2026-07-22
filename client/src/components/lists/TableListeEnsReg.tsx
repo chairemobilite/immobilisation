@@ -4,7 +4,10 @@ import { TableEnteteEnsembleProps } from '../../types/InterfaceTypes';
 import { serviceEnsemblesReglements } from "../../services";
 import AddIcon from '@mui/icons-material/AddOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useSearchParams } from 'react-router';
+
 const TableListeEnsReg: React.FC<TableEnteteEnsembleProps> = (props) => {
+    const [searchParams,setSearchParams]=useSearchParams()
     const enteteEnsemblevide: entete_ensembles_reglement_stationnement = {
         id_er:0,
         date_debut_er:0,
@@ -38,7 +41,7 @@ const TableListeEnsReg: React.FC<TableEnteteEnsembleProps> = (props) => {
         props.defEnsembleReglement(reglementAObtenir.data[0])
         const entetesReglementsPertinents = await serviceEnsemblesReglements.chercheReglementsPourEnsReg(id_reg)
         props.defEntetesReglements(entetesReglementsPertinents.data)
-        window.history.pushState({}, '', `?id_er=${id_reg}`);
+        setSearchParams([['id_er',id_reg.toString()]])
     }
 
     const gestBoutonAjout = async() =>{
@@ -62,6 +65,10 @@ const TableListeEnsReg: React.FC<TableEnteteEnsembleProps> = (props) => {
     const gestSuppressionEnsReg = async(idEnsReg:number) =>{
         const reponse = await serviceEnsemblesReglements.supprimeEnsReg(idEnsReg)
         if (reponse){
+            if (idEnsReg===props.ensembleReglement.entete.id_er){
+                searchParams.delete('id_er')
+                setSearchParams(searchParams)      
+            }
             const newList = props.entetesEnsembles.filter((item)=>item.id_er!==idEnsReg)
             props.defEntetesEnsembles(newList)
         }
