@@ -6,7 +6,6 @@
     flex-direction: column; /* Stack vertically if necessary */
     height: 100vh; /* Full height of the page */
     overflow: hidden; /* Prevent overflow (no scrollbars) */
-    background-color: #1f1f1f;
 }
 .ens-reg-conteneur-row{
     display:flex;
@@ -16,21 +15,23 @@
 .panneau-entete-ens-reg {
     height: 100%; /* Adjust width as needed */
     border: 1px solid #ccc; /* Add border for visibility */
-    background-color: #1f1f1f;
     position:relative;
     width:400px;
-    overflow-y:auto;
+    overflow-y:hidden;
     display:flex;
     flex-direction:column;
 }
 .panneau-scroll-entete-ens-reg{
-    overflow-y:auto;
+    display:flex;
+    flex-direction: column;
+    overflow-y: hidden;
+    overflow-x:hidden;
+    padding: 10px;
 }
 
 .panneau-entete-ens-reg h4 {
     position: sticky;
     top: 0;
-    background-color: #1f1f1f; /* Match background color */
     border-bottom: 1px solid #ccc; /* Add a bottom border for separation */
 }
 
@@ -38,63 +39,28 @@
     width: 100%;
     border-collapse: collapse;
     flex:1;
-    overflow-y: auto;
+    flex-basis: content;
+    overflow: auto;
 }
 
-.table-entete-ens-reg thead {
-    position: sticky;
-    top: 0px; /* Adjust based on the height of the h4 element */
-    z-index: 5; /* Ensure it stays above the table body */
-    background-color: #f2f2f2; /* Match background color */
-}
-
-
-.table-entete-ens-reg th {
-    background-color: #f2f2f2;
-    color: black;
-    text-align: left;
-    border-bottom: 1px solid #ccc; /* Add a bottom border for separation */
-}
-
-.table-entete-ens-reg tr:hover {
-    background-color: blue;
-}
 
 .panneau-details-ens-reg {
     display: flex;
     flex:1;
     flex-direction: column;
-    overflow-y:auto;
+    overflow-y:hidden;
     height: 100%; /* Ensure it takes the full width of its container */
     border: 1px solid #ccc; /* Add a border for visibility */
     position: relative; /* Ensure the handle is positioned correctly */
 }
 
-.table-modif-ens-reg-entete th {
-    background-color: #f2f2f2;
-    color: black;
-    position: sticky;
-    text-align:left;
-    top: 0; /* Fix the header at the top */
-    z-index: 1; /* Ensure the header is above the table body */
-}
-.table-modif-ens-reg-corps th {
-    background-color: #f2f2f2;
-    color: black;
-    position: sticky;
-    text-align:left;
-    top: 0; /* Fix the header at the top */
-    z-index: 1; /* Ensure the header is above the table body */
+.panneau-table-association{
+    display:flex;
+    flex-direction: column;
+    overflow-y: hidden;
+    overflow-x:hidden;
 }
 
-.table-reg-possibles th{
-    background-color: #f2f2f2;
-    color: black;
-    position: sticky;
-    text-align:left;
-    top: 0; /* Fix the header at the top */
-    z-index: 1; /* Ensure the header is above the table body */
-}
 .selected-row{
     background-color: 'red';
 }

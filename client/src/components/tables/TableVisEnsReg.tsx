@@ -1,13 +1,51 @@
-import React, { useState, useRef } from 'react';
+/*
+Copyright (c) 2026 Paul Charbonneau
+
+Licensed under the MIT License.
+See the LICENSE file in the project root for license information.
+
+Helps visualize and create the assignments of regulations to land 
+uses in a regulation set
+*/
+
+import React from 'react';
 import { TableVisModEnsRegProps } from '../../types/InterfaceTypes';
 import AddIcon from '@mui/icons-material/AddOutlined';
 import CancelIcon from '@mui/icons-material/Cancel';
-import { Edit, Save } from '@mui/icons-material';
+import { 
+    Edit, 
+    Save 
+} from '@mui/icons-material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { ensemble_reglements_stationnement, entete_ensembles_reglement_stationnement } from '../../types/DataTypes';
+import { 
+    ensemble_reglements_stationnement, 
+    entete_ensembles_reglement_stationnement 
+} from '../../types/DataTypes';
 import { serviceEnsemblesReglements } from '../../services';
 import { ReponseEnteteEnsembleReglementStationnement } from '../../types/serviceTypes';
+import { 
+    Box, 
+    Button, 
+    Checkbox, 
+    IconButton, 
+    Paper, 
+    Table, 
+    TableBody, 
+    TableCell, 
+    TableContainer, 
+    TableHead, 
+    TableRow, 
+    TextField, 
+    Typography 
+} from '@mui/material';
 
+
+/**
+ * this function is a function capable of showing a complte regulation set
+ * TO-DO:split up the return value into a few components this is getting a little large at the moment 
+ * @param props the properties that are used for the component see interface definition
+ * @returns a jsx component that visualizes a complete parking regulation set
+ */
 const TableVisModEnsReg: React.FC<TableVisModEnsRegProps> = (props) => {
     const enteteEnsemblevide: entete_ensembles_reglement_stationnement = {
         id_er: 0,
@@ -21,9 +59,18 @@ const TableVisModEnsReg: React.FC<TableVisModEnsRegProps> = (props) => {
         table_util_sol: [],
         table_etendue: []
     }
+    /**
+     * Handles the opening of the modal which is used to create new 
+     * land use to regulation assignments
+     */
     const gestBoutonAjout = async () => {
         props.defModalOuvert(true)
     }
+    /**
+     * handles the saving the of the regulation set handers and figures out 
+     * whether we're discussing a new item or one that we need to update.
+     * Once save is complete, handles updating the states in the frontend
+     */
     const gestBoutonSauvegardeEntete = async () => {
         const isNew = props.ensembleReglement.entete.id_er === -1;
         let saveReturn: ReponseEnteteEnsembleReglementStationnement;
@@ -88,6 +135,12 @@ const TableVisModEnsReg: React.FC<TableVisModEnsRegProps> = (props) => {
         // clear editing boolean in order to go back to display mode
         props.defEditionEnteteEnCours(false)
     }
+
+    /**
+     * handles the changes to the header on the go during edition
+     * @param champsAModifier the field we want to edit
+     * @param valeur the new value of the field
+     */
     const gestChangementEntete = (champsAModifier: string, valeur: string | null) => {
         let newEntete: entete_ensembles_reglement_stationnement;
         if ((champsAModifier === 'date_debut_er' || champsAModifier === 'date_fin_er') && valeur !== null) {
@@ -116,11 +169,22 @@ const TableVisModEnsReg: React.FC<TableVisModEnsRegProps> = (props) => {
         props.defEnsembleReglement(newReg)
     }
 
+    /**
+     * handles the opening of the modal that edits things and the various flages 
+     * that are used to avoid trying to make 2 changes at once which makes state 
+     * handling a pain
+     * @param idAssoc the id of the land use regulation assignement we want to set
+     */
     const gestEditionAssociation = async(idAssoc:number)=>{
         props.defEditionCorpsEnCours(true)
         props.defIdAssociationEnEdition(idAssoc)
         props.defModalOuvert(true)
     }
+
+    /**
+     * handles the deletion of an existing land use to regulation assignement
+     * @param idAssoc the id of the assignment we want to delete 
+     */
     const gestSuppressionAssoc = async(idAssoc:number)=>{
         const reponse = await serviceEnsemblesReglements.supprimeAssoc(idAssoc)
         if (reponse){
@@ -134,50 +198,200 @@ const TableVisModEnsReg: React.FC<TableVisModEnsRegProps> = (props) => {
             props.defEnsembleReglement(nouvelEnsemble)
         }
     }
+
+    /**
+     * Handles what to do when you cancel an edition
+     */
+    function handleCancel(){
+        props.defEnsembleReglement(props.ancienEnsRegComplet)
+        props.defAncienEnsRegComplet({
+                entete:{
+                    id_er:-1,
+                    description_er:'',
+                    date_debut_er:0,
+                    date_fin_er:2025
+                },
+                table_util_sol:[],
+                assoc_util_reg:[],
+                table_etendue:[]  
+            }
+        )
+        props.defEditionEnteteEnCours(false)
+    }
     return (
         <div className="panneau-details-ens-reg">
+           <Typography sx={{ mt: 4, mb: 2,paddingLeft:'10px' }} variant="h4" component="div">
+            Détails ensemble sélectionné
+            </Typography>
+            <div
+            
+                >
+                <TableContainer
+                    component={Paper}
+                    sx={{ padding: '10px' }}
+                >
+                    <Table >
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>ID ensemble</TableCell>
+                                <TableCell>Description Ensemble</TableCell>
+                                <TableCell>Année Début Reglement</TableCell>
+                                {props.editionEnteteEnCours ? <TableCell>Perpetuite</TableCell> : <></>}
+                                <TableCell>Année Fin Reglement</TableCell>
+                                {props.editionEnteteEnCours ? <TableCell>En Vigueur</TableCell> : <></>}
+                                <TableCell></TableCell>
+                                {props.editionEnteteEnCours ? <TableCell></TableCell> : <></>}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {<TableRow key={props.ensembleReglement.entete.id_er}>
+                                <TableCell>{props.ensembleReglement.entete.id_er}</TableCell>
+                                <TableCell>{props.editionEnteteEnCours ? 
+                                    <TextField 
+                                        value={props.ensembleReglement.entete.description_er} 
+                                        onChange={(e) => { 
+                                            gestChangementEntete('description_er', e.target.value) 
+                                        }}  
+                                    /> : 
+                                    props.ensembleReglement.entete.description_er}
+                                </TableCell>
+                                <TableCell>
+                                    {
+                                        props.editionEnteteEnCours && 
+                                        props.ensembleReglement.entete.date_debut_er !== null ? 
+                                            <TextField 
+                                                value={props.ensembleReglement.entete.date_debut_er} 
+                                                onChange={(e) => { 
+                                                    gestChangementEntete(
+                                                        'date_debut_er', 
+                                                        e.target.value
+                                                    ) 
+                                                }} 
+                                                type='number' 
+                                            /> 
+                                            : 
+                                            props.ensembleReglement.entete.date_debut_er
+                                    }
+                                </TableCell>
+                                {props.editionEnteteEnCours ? 
+                                    <TableCell>
+                                        <Checkbox
+                                            checked={props.ensembleReglement.entete.date_debut_er === null} 
+                                            onClick={() => 
+                                                gestChangementEntete(
+                                                    'date_debut_er', 
+                                                    props.ensembleReglement.entete.date_debut_er === null ? 
+                                                        '0' : 
+                                                        null
+                                                )
+                                            }
+                                            component={Paper} 
+                                        />
+                                    </TableCell> : <>
+                                    </>
+                                }
+                                <TableCell>
+                                    {
+                                        props.editionEnteteEnCours && 
+                                        props.ensembleReglement.entete.date_fin_er !== null ? 
+                                            <TextField 
+                                                value={props.ensembleReglement.entete.date_fin_er} 
+                                                onChange={(e) => { 
+                                                    gestChangementEntete(
+                                                        'date_fin_er', 
+                                                        e.target.value
+                                                    )}} 
+                                                type='number' 
+                                            /> : 
+                                            props.ensembleReglement.entete.date_fin_er
+                                    }
+                                </TableCell>
+                                {props.editionEnteteEnCours ? 
+                                    <TableCell>
+                                        <Checkbox 
+                                            checked={
+                                                props.ensembleReglement.entete.date_fin_er === null
+                                            } 
+                                            onClick={() => 
+                                                gestChangementEntete(
+                                                    'date_fin_er', 
+                                                    props.ensembleReglement.entete.date_fin_er === null ? '0' : null
+                                                )
+                                            } 
+                                            component={Paper}
+                                        />
+                                    </TableCell> : <></>}
+                                <TableCell>
+                                    {
+                                        props.editionEnteteEnCours ? 
+                                            <IconButton
+                                                onClick={gestBoutonSauvegardeEntete} 
+                                                aria-label='Sauvegarder'
+                                            >
+                                                <Save />
+                                            </IconButton> : 
+                                            <IconButton
+                                                onClick={() => { 
+                                                    props.defAncienEnsRegComplet(props.ensembleReglement); 
+                                                    props.defEditionEnteteEnCours(true); 
+                                                }}
+                                                aria-label='Éditer'
+                                            >
+                                                <Edit  />
+                                            </IconButton>
+                                    }
+                                </TableCell>
+                                {props.editionEnteteEnCours ? <TableCell>
+                                    <IconButton
+                                        onClick={handleCancel}
+                                        aria-label='Annuler'
+                                    >
+                                        <CancelIcon />
+                                    </IconButton>
+                                </TableCell> : <></>}
+                            </TableRow>}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>
+            {props.ensembleReglement.entete.id_er>0?
+                <Box 
+                    sx={{padding:'10px'}}
+                >
+                    <Button
+                        variant='outlined'
+                        onClick={gestBoutonAjout}
+                    >
+                        <AddIcon  /> Ajouter association
+                    </Button>
+                </Box>:<></>}
+ 
+            <div
+                className='panneau-table-association'
+            >
 
-            <h4>Détails Ensemble</h4>
-            <table className="table-modif-ens-reg-entete">
-                <thead>
-                    <tr>
-                        <th>ID ensemble</th>
-                        <th>Description Ensemble</th>
-                        <th>Année Début Reglement</th>
-                        {props.editionEnteteEnCours ? <th>Perpetuite</th> : <></>}
-                        <th>Année Fin Reglement</th>
-                        {props.editionEnteteEnCours ? <th>En Vigueur</th> : <></>}
-                        <th></th>
-                        {props.editionEnteteEnCours ? <th></th> : <></>}
-                    </tr>
-                </thead>
-                <tbody>
-                    {<tr key={props.ensembleReglement.entete.id_er}>
-                        <td>{props.ensembleReglement.entete.id_er}</td>
-                        <td>{props.editionEnteteEnCours ? <input value={props.ensembleReglement.entete.description_er} onChange={(e) => { gestChangementEntete('description_er', e.target.value) }} type='text' /> : props.ensembleReglement.entete.description_er}</td>
-                        <td>{props.editionEnteteEnCours && props.ensembleReglement.entete.date_debut_er !== null ? <input value={props.ensembleReglement.entete.date_debut_er} onChange={(e) => { gestChangementEntete('date_debut_er', e.target.value) }} type='number' /> : props.ensembleReglement.entete.date_debut_er}</td>
-                        {props.editionEnteteEnCours ? <td><input type='checkbox' checked={props.ensembleReglement.entete.date_debut_er === null} onClick={() => gestChangementEntete('date_debut_er', props.ensembleReglement.entete.date_debut_er === null ? '0' : null)} /></td> : <></>}
-                        <td>{props.editionEnteteEnCours && props.ensembleReglement.entete.date_fin_er !== null ? <input value={props.ensembleReglement.entete.date_fin_er} onChange={(e) => { gestChangementEntete('date_fin_er', e.target.value) }} type='number' /> : props.ensembleReglement.entete.date_fin_er}</td>
-                        {props.editionEnteteEnCours ? <td><input type='checkbox' checked={props.ensembleReglement.entete.date_fin_er === null} onClick={() => gestChangementEntete('date_fin_er', props.ensembleReglement.entete.date_fin_er === null ? '0' : null)} /></td> : <></>}
-                        <td>{props.editionEnteteEnCours ? <Save onClick={gestBoutonSauvegardeEntete} /> : <Edit onClick={() => { props.defAncienEnsRegComplet(props.ensembleReglement); props.defEditionEnteteEnCours(true); }} />}</td>
-                        {props.editionEnteteEnCours ? <td><CancelIcon /></td> : <></>}
-                    </tr>}
-                </tbody>
-            </table>
-            {props.ensembleReglement.entete.id_er>0?<div className="ajout-reglement"><AddIcon onClick={gestBoutonAjout} /> Ajouter association</div>:<></>}
-            <table className="table-modif-ens-reg-corps">
-                <thead>
-                    <tr>
-                        <th>ID Assoc</th>
-                        <th>CUBF</th>
-                        <th>ID Règlement</th>
-                        <th>Deb reg</th>
-                        <th>Fin Reg</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
+            <TableContainer component={Paper}>
+                
+            <Table
+                stickyHeader
+                size='small'
+                style={{
+                    padding:'15px',
+                    overflow:'auto'
+                }}
+            >
+                <TableHead>
+                    <TableRow>
+                        <TableCell>ID Assoc</TableCell>
+                        <TableCell>CUBF</TableCell>
+                        <TableCell>ID Règlement</TableCell>
+                        <TableCell>Deb reg</TableCell>
+                        <TableCell>Fin Reg</TableCell>
+                        <TableCell></TableCell>
+                        <TableCell></TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
                     {props.ensembleReglement.assoc_util_reg.map((assoc) => {
                         //console.log('Printing relevant rules',props.entetesReglements)
                         const foundRule = Array.isArray(props.entetesReglements)
@@ -191,22 +405,60 @@ const TableVisModEnsReg: React.FC<TableVisModEnsRegProps> = (props) => {
                                 return Number(item.cubf) === assoc.cubf
                             })
                             : null;
-                        //console.log('assoc.cubf:', assoc.cubf, 'foundItem:', foundLandUse);
+
                         return (
-                            <tr key={assoc.id_assoc_er_reg} >
-                                <td>{assoc.id_assoc_er_reg}</td>
-                                <td>{assoc.cubf + ' - ' + (foundLandUse ? foundLandUse?.description : 'N/A')}</td>
-                                <td>{assoc.id_reg_stat + ' - ' + (foundRule ? foundRule.description : 'N/A')}</td>
-                                <td>{(foundRule ? foundRule.annee_debut_reg : 'N/A')}</td>
-                                <td>{(foundRule ? foundRule.annee_fin_reg : 'N/A')}</td>
-                                <td>{props.editionCorpsEnCours && props.idAssociationEnEdition === assoc.id_assoc_er_reg ? <Save /> : <Edit onClick={()=>gestEditionAssociation(assoc.id_assoc_er_reg)} />}</td>
-                                <td>{props.editionCorpsEnCours && props.idAssociationEnEdition === assoc.id_assoc_er_reg ? <CancelIcon /> : <DeleteIcon onClick={()=>gestSuppressionAssoc(assoc.id_assoc_er_reg)}/>}</td>
-                            </tr>
+                            <TableRow key={assoc.id_assoc_er_reg} >
+                                <TableCell>{assoc.id_assoc_er_reg}</TableCell>
+                                <TableCell>
+                                    {
+                                        assoc.cubf + 
+                                        ' - ' + 
+                                        (foundLandUse ? foundLandUse?.description : 'N/A')
+                                    }
+                                </TableCell>
+                                <TableCell>
+                                    {
+                                        assoc.id_reg_stat + 
+                                        ' - ' + 
+                                        (foundRule ? foundRule.description : 'N/A')
+                                    }
+                                </TableCell>
+                                <TableCell>
+                                    {
+                                        (foundRule ? foundRule.annee_debut_reg : 'N/A')
+                                    }
+                                </TableCell>
+                                <TableCell>
+                                    {
+                                        (foundRule ? foundRule.annee_fin_reg : 'N/A')
+                                    }
+                                </TableCell>
+                                <TableCell>{
+                                    <IconButton
+                                        onClick={()=>gestEditionAssociation(assoc.id_assoc_er_reg)}
+                                        aria-label='Éditer association'
+                                    >
+                                        <Edit  />
+                                    </IconButton>}
+                                </TableCell> 
+                                <TableCell>{
+                                    <IconButton
+                                        onClick={()=>gestSuppressionAssoc(assoc.id_assoc_er_reg)}
+                                        aria-label='Supprimer association'
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>}
+                                </TableCell>
+                            </TableRow>
 
                         )
                     })}
-                </tbody>
-            </table>
+                </TableBody>
+                
+            </Table>
+
+            </TableContainer>
+            </div>
         </div>
     );
 };
