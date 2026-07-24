@@ -534,6 +534,7 @@ export interface TableEnteteEnsembleProps{
     defEditionCorpsEnCours:React.Dispatch<SetStateAction<boolean>>,
     ancienEnsRegComplet:ensemble_reglements_stationnement,
     defAncienEnsRegComplet:React.Dispatch<SetStateAction<ensemble_reglements_stationnement>>
+    setDuplicationModalOpen:Dispatch<SetStateAction<boolean>>
 }
 
 export interface TableVisModEnsRegProps{
