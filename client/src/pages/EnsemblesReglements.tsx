@@ -20,6 +20,7 @@ import CreationAssociationCubfRegEnsReg from "../components/modals/CreationAssoc
 import './ensemblereg.css'
 import './common.css'
 import { serviceEnsemblesReglements } from "../services";
+import ModalDuplicationEnsReg from '../components/modals/ModalDuplicationEnsReg'
 /**
  * this is the main page item for the modification of regulation sets. There are 2 big panels 
  * and 2 modals as part of this page which handle the various interactions
@@ -49,6 +50,7 @@ const EnsemblesReglements: React.FC = () => {
     const [editedAssignId,setEditedAssignId] = useState<number>(-1);
     const [newAssignModalOpen,setNewAssignModalOpen] = useState<boolean>(false);
     const [AllRegHeaders,setAllRegHeaders] = useState<entete_reglement_stationnement[]>([]);
+    const [duplicateERsModalOpen,setDuplicateERsModalOpen]=useState<boolean>(false)
     const [searchParams] = useSearchParams();
     
     useEffect(() => {
@@ -56,11 +58,16 @@ const EnsemblesReglements: React.FC = () => {
         const fetchER=async(idER:number)=>{
             const [
                 responseAssoc,
-                reponseEntete] = await Promise.all([
+                reponseEntete,
+                reponseListe
+            ] = await Promise.all([
                     serviceEnsemblesReglements.chercheEnsembleReglementParId(idER),
-                    serviceEnsemblesReglements.chercheReglementsPourEnsReg(idER)]) 
+                    serviceEnsemblesReglements.chercheReglementsPourEnsReg(idER),
+                    serviceEnsemblesReglements.chercheTousEntetesEnsemblesReglements()
+                ]) 
             setFullRegSet(responseAssoc.data[0])
             setPertinentRegs(reponseEntete.data)
+            setRegSetHeaders(reponseListe.data)
         }
         
         const id_er = searchParams.get("id_er");
@@ -86,6 +93,7 @@ const EnsemblesReglements: React.FC = () => {
                     defEditionCorpsEnCours={setAssignEditFlag}
                     ancienEnsRegComplet={oldFullRegSet}
                     defAncienEnsRegComplet={setOldFullRegSet}
+                    setDuplicationModalOpen={setDuplicateERsModalOpen}
                 />
 
                 {/* The panel on the right for detailed edition of regulation set */}
@@ -127,6 +135,12 @@ const EnsemblesReglements: React.FC = () => {
                     defTousReglement={setAllRegHeaders}
                     reglementVisu={pertinentRegs}
                     defReglementVisu={setPertinentRegs}
+                />
+                <ModalDuplicationEnsReg
+                    modalOpen={duplicateERsModalOpen}
+                    setModalOpen={setDuplicateERsModalOpen}
+                    setRegSetCurrent={setFullRegSet}
+                    setRegSetList={setRegSetHeaders}
                 />
             </div>
         </div>
