@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
-import { PropsCartoValidation } from "../types/InterfaceTypes"
+import { PropsCartoValidation } from "../../types/InterfaceTypes"
 import {  MapContainer, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
-import { utiliserContexte } from "../contexte/ContexteImmobilisation";
+import { utiliserContexte } from "../../contexte/ContexteImmobilisation";
+import { escapeHTMLChars } from "../../utils/escapeHTMLChars";
 
 
 const CarteValidation: React.FC<PropsCartoValidation> = (props: PropsCartoValidation) => {
@@ -14,10 +15,44 @@ const CarteValidation: React.FC<PropsCartoValidation> = (props: PropsCartoValida
     const urlCarto = optionsCartos.find((entree) => entree.id === optionCartoChoisie)?.URL ?? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
     const attributionCarto = optionsCartos.find((entree) => entree.id === optionCartoChoisie)?.attribution ?? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     const zoomCarto = optionsCartos.find((entree) => entree.id === optionCartoChoisie)?.zoomMax ?? 18
-    console.log('Map received  zone data:', JSON.stringify(props.lotSelect, null, 0));
     const geoJsonLayerGroupRef = useRef<L.LayerGroup | null>(null); // Refe
 
-    const MapComponent = () => {
+    
+
+    return (<div className='carte-validation'>
+        <MapContainer
+            center={props.startPosition}
+            zoom={props.startZoom}
+            style={{ height: '100%', width: '100%' }}
+            minZoom={1}
+            maxZoom={zoomCarto}
+        >
+            <TileLayer
+                url={urlCarto}
+                attribution={attributionCarto}
+                maxZoom={zoomCarto}
+                minZoom={1}
+            />
+            {props.lotSelect && (<>
+                <MapComponent 
+                    geoJsonLayerGroupRef={geoJsonLayerGroupRef}
+                    lotSelect={props.lotSelect}
+                />
+            </>
+            )}
+        </MapContainer>
+    </div>)
+}
+
+const MapComponent = (
+    {
+        geoJsonLayerGroupRef,
+        lotSelect
+    }:{
+        geoJsonLayerGroupRef:React.RefObject<L.LayerGroup | null>,
+        lotSelect:PropsCartoValidation['lotSelect']
+    }
+) => {
         const map = useMap(); // Access the map instance
 
         useEffect(() => {
@@ -26,9 +61,9 @@ const CarteValidation: React.FC<PropsCartoValidation> = (props: PropsCartoValida
                     geoJsonLayerGroupRef.current.clearLayers(); // Clear previous vector layers
                 }
 
-                if (props.lotSelect && props.lotSelect.features.length>0) {
+                if (lotSelect && lotSelect.features.length>0) {
                     // Create a new GeoJSON layer from props.geoJsondata
-                    const geoJsonLayer = L.geoJSON(props.lotSelect, {
+                    const geoJsonLayer = L.geoJSON(lotSelect, {
                         style: {
                             color: 'red', // Border color
                             weight: 2,     // Border thickness
@@ -39,8 +74,8 @@ const CarteValidation: React.FC<PropsCartoValidation> = (props: PropsCartoValida
                             if (feature.properties) {
                                 const { g_no_lot, g_va_suprf } = feature.properties; // Destructure properties
                                 const formattedPopupContent = `
-                            <strong>Feature ID:</strong> ${g_no_lot} <br/>
-                            <strong>Superficie Terrain:</strong> ${g_va_suprf} <br/>
+                            <strong>Feature ID:</strong> ${escapeHTMLChars(g_no_lot)} <br/>
+                            <strong>Superficie Terrain:</strong> ${escapeHTMLChars(g_va_suprf)} <br/>
                           `;
                                 layer.bindPopup(formattedPopupContent);
                             }
@@ -58,30 +93,8 @@ const CarteValidation: React.FC<PropsCartoValidation> = (props: PropsCartoValida
                     map.fitBounds(bounds);
                 }
             }
-        }, [props.lotSelect, map]); // Dependency on props.geoJsondata and map
+        }, [lotSelect, map]); // Dependency on props.geoJsondata and map
 
         return null; // No need to render anything for the map component itself
     };
-
-    return (<div className='carte-validation'>
-        <MapContainer
-            center={props.startPosition}
-            zoom={props.startZoom}
-            style={{ height: '100%', width: '100%' }}
-            minZoom={1}
-            maxZoom={zoomCarto}
-        >
-            <TileLayer
-                url={urlCarto}
-                attribution={attributionCarto}
-                maxZoom={zoomCarto}
-                minZoom={1}
-            />
-            {props.lotSelect && (<>
-                <MapComponent />
-            </>
-            )}
-        </MapContainer>
-    </div>)
-}
 export default CarteValidation;

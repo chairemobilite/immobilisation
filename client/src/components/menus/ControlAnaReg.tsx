@@ -1,7 +1,7 @@
-import { FC, useState, useEffect } from 'react'
-import { serviceEnsemblesReglements } from '../services';
-import { ControlAnaRegProps } from '../types/InterfaceTypes';
-import { entete_ensembles_reglement_stationnement, ProprietesRequetesER } from '../types/DataTypes';
+import { FC, useState, useEffect, SetStateAction, Dispatch } from 'react'
+import { serviceEnsemblesReglements } from '../../services';
+import { ControlAnaRegProps } from '../../types/InterfaceTypes';
+import { entete_ensembles_reglement_stationnement, ProprietesRequetesER } from '../../types/DataTypes';
 import {
     Modal,
     Box,
@@ -16,7 +16,7 @@ import {
 import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import { Marker } from 'react-leaflet';
 import L from 'leaflet';
-import { serviceEnsRegTerr } from '../services/serviceEnsRegTerr';
+import { serviceEnsRegTerr } from '../../services/serviceEnsRegTerr';
 const ControlAnaReg: FC<ControlAnaRegProps> = (props: ControlAnaRegProps) => {
     const [tousEnsReg, defTousEnsRegs] = useState<entete_ensembles_reglement_stationnement[]>([])
     const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -43,31 +43,7 @@ const ControlAnaReg: FC<ControlAnaRegProps> = (props: ControlAnaRegProps) => {
         props.defNGraphiques(ngraphiques);
     };
 
-    const MapComponent = () => {
-        const map = useMap(); // Access the map instance
 
-        useEffect(() => {
-            if (selectedLocation !== null) {
-                map.setView(selectedLocation, map.getZoom());
-            }
-
-            // Add click handler to set selected location
-            const handleClick = (e: L.LeafletMouseEvent) => {
-                setSelectedLocation([e.latlng.lat, e.latlng.lng]);
-            };
-            map.on('click', handleClick);
-            if (selectedLocation) {
-                // Add marker at the selected location
-                // But since MapComponent is not responsible for rendering, marker should be rendered in MapContainer
-            }
-            // Cleanup on unmount
-            return () => {
-                map.off('click', handleClick);
-            };
-        }, [map]); // Dependency on props.geoJsondata and map
-
-        return null; // No need to render anything for the map component itself
-    };
 
     const gestObtentionERCarto = async () => {
         if (Array.isArray(selectedLocation) && selectedLocation.length === 2 &&selectedLocation !== null) {
@@ -289,7 +265,10 @@ const ControlAnaReg: FC<ControlAnaRegProps> = (props: ControlAnaRegProps) => {
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         />
-                        <MapComponent />
+                        <MapComponent 
+                            selectedLocation={selectedLocation}
+                            setSelectedLocation={setSelectedLocation}
+                        />
                         {selectedLocation ? (
                             <Marker
                                 position={selectedLocation}
@@ -409,5 +388,37 @@ const ControlAnaReg: FC<ControlAnaRegProps> = (props: ControlAnaRegProps) => {
         </>
     </div>)
 }
+
+function MapComponent({ 
+    selectedLocation,
+    setSelectedLocation
+}: { 
+    selectedLocation: L.LatLngExpression | null,
+    setSelectedLocation: Dispatch<SetStateAction< L.LatLngExpression | null>>
+}) {
+    const map = useMap(); // Access the map instance
+
+    useEffect(() => {
+        if (selectedLocation !== null) {
+            map.setView(selectedLocation, map.getZoom());
+        }
+
+        // Add click handler to set selected location
+        const handleClick = (e: L.LeafletMouseEvent) => {
+            setSelectedLocation([e.latlng.lat, e.latlng.lng]);
+        };
+        map.on('click', handleClick);
+        if (selectedLocation) {
+            // Add marker at the selected location
+            // But since MapComponent is not responsible for rendering, marker should be rendered in MapContainer
+        }
+        // Cleanup on unmount
+        return () => {
+            map.off('click', handleClick);
+        };
+    }, [map]); // Dependency on props.geoJsondata and map
+
+    return null; // No need to render anything for the map component itself
+};
 
 export default ControlAnaReg

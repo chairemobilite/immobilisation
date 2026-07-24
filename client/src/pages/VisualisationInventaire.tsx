@@ -7,7 +7,7 @@ import { serviceQuartiersAnalyse, } from '../services/serviceQuartiersAnalyse';
 import { serviceInventaire } from '../services/serviceInventaire';
 import { FeatureCollection, Geometry, Feature } from 'geojson';
 import { lotCadastralGeoJsonProperties, roleFoncierGeoJsonProps, lotCadastralAvecBoolInvGeoJsonProperties } from '../types/DataTypes';
-import CarteInventaire from '../components/carteInventaire';
+import CarteInventaire from '../components/maps/carteInventaire';
 import TableRevueInventaire from '../components/panels/RevueInventaire';
 import './visualisationInventaire.css';
 import './common.css';

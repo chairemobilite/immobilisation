@@ -1,0 +1,213 @@
+import React, { useEffect, useState, useRef } from 'react';
+import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import { CarteInventaireProps } from '../../types/InterfaceTypes';
+import "leaflet/dist/leaflet.css";
+import L, { LeafletEvent } from 'leaflet';
+import selectLotInventaire from '../../utils/selectLotInventaire';
+import { selectLotProps } from '../../types/utilTypes';
+import { lotCadastralAvecBoolInvGeoJsonProperties } from '../../types/DataTypes';
+import chroma from 'chroma-js';
+import { utiliserContexte } from '../../contexte/ContexteImmobilisation';
+const CarteInventaire: React.FC<CarteInventaireProps> = (props) => {
+    
+    const contexte = utiliserContexte();
+    const optionCartoChoisie = contexte?.optionCartoChoisie ?? "";
+    const changerCarto = contexte?.changerCarto ?? (() => { });
+    const optionsCartos = contexte?.optionsCartos ?? [];
+
+    const urlCarto = optionsCartos.find((entree) => entree.id === optionCartoChoisie)?.URL ?? "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    const attributionCarto = optionsCartos.find((entree) => entree.id === optionCartoChoisie)?.attribution ?? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    const zoomCarto = optionsCartos.find((entree) => entree.id === optionCartoChoisie)?.zoomMax ?? 18
+    const geoJsonLayerGroupRef = useRef<L.LayerGroup | null>(null); // Refe
+    const prevInventaireRef = useRef<GeoJSON.FeatureCollection<GeoJSON.Geometry, lotCadastralAvecBoolInvGeoJsonProperties> | null>(null);
+    return (<div className="carte-inventaire">
+        <MapContainer
+            center={props.startPosition}
+            zoom={props.startZoom}
+            style={{ height: '100%', width: '100%' }}
+            maxZoom={zoomCarto}
+        >
+            <TileLayer
+                url={urlCarto}
+                attribution={attributionCarto}
+                maxZoom={zoomCarto}
+                minZoom={1}
+            />
+            {props.inventaire && (<>
+                <MapComponent 
+                    props={props}
+                    geoJsonLayerGroupRef={geoJsonLayerGroupRef}
+                    prevInventaireRef={prevInventaireRef}
+                />
+            </>
+            )}
+        </MapContainer>
+    </div>
+    );
+};
+
+
+
+
+function MapComponent({
+    geoJsonLayerGroupRef,
+    props,
+    prevInventaireRef
+}:{
+    geoJsonLayerGroupRef:React.RefObject<L.LayerGroup | null>,
+    prevInventaireRef:React.RefObject<GeoJSON.FeatureCollection<GeoJSON.Geometry, lotCadastralAvecBoolInvGeoJsonProperties> | null>
+    props:CarteInventaireProps
+}
+) {
+    const map = useMap(); // Access the map instance
+    const handleLotClick = (e: LeafletEvent) => {
+        const key = e.target.feature.properties.g_no_lot;
+        const propsLot: selectLotProps = {
+            inventaireComplet: props.inventaire,
+            numLot: key,
+            lotAnalyse: props.lotSelect,
+            defLotAnalyse: props.defLotSelect,
+            inventaireAnalyse: props.itemSelect,
+            defInventaireAnalyse: props.defItemSelect,
+            roleAnalyse: props.donneesRole,
+            defRoleAnalyse: props.defDonneesRole,
+            reglementsAnalyse: props.reglements,
+            defReglementsAnalyse: props.defReglements,
+            ensemblesAnalyse: props.ensemblesReglements,
+            defEnsemblesAnalyse: props.defEnsemblesReglements,
+            methodeEstimeRegard: props.methodeEstimeRegard,
+            defMethodeEstimeRegard: props.defMethodeEstimeRegard,
+            regRegard: props.regRegard,
+            defRegRegard: props.defRegRegard,
+            ensRegRegard: props.ensRegRegard,
+            defEnsRegRegard: props.defEnsRegRegard,
+            roleRegard: props.roleRegard,
+            defRoleRegard: props.defRoleRegard,
+            lotsDuQuartier: props.lotsDuQuartier
+        }
+        selectLotInventaire(propsLot)
+    }
+    useEffect(() => {
+        if (map) {
+            if (geoJsonLayerGroupRef.current) {
+                geoJsonLayerGroupRef.current.clearLayers(); // Clear previous vector layers
+            }
+
+            if (props.lotsDuQuartier && props.lotsDuQuartier.features.length > 0) {
+                // Create a new GeoJSON layer from props.geoJsondata
+                const lotsAMontrer = !props.montrerTousLots ? props.lotsDuQuartier.features.filter((o) => o.properties.bool_inv === true) : props.lotsDuQuartier;
+                let colorScale=chroma.scale('YlOrRd').domain([0,10])
+                let minValue=0;
+                let maxValue=10;
+                if (props.inventaire.length>0){
+                    // Extract min/max dynamically from the dataset
+                    const values = props.inventaire.map(f => Math.max(f.n_places_min, f.n_places_mesure, f.n_places_estime));
+                    maxValue = Math.max(...values);
+                    // Create a color scale from light yellow to dark red
+                    colorScale = chroma.scale('YlOrRd').domain([0,maxValue])
+                }
+                const geoJsonLayer = L.geoJSON(lotsAMontrer, {
+                    style: (feature) => {
+                        const isLotInAnalyse = feature && props.lotSelect?.features.map((row) => row.properties.g_no_lot).includes(feature.properties.g_no_lot);
+                        const hasInventaire = props.inventaire.find((item) => item.g_no_lot === feature?.properties.g_no_lot) ?? false;
+                        const parkingInventory = hasInventaire ? Math.max(
+                            props.inventaire.find((item) => item.g_no_lot === feature?.properties?.g_no_lot && item.methode_estime === 2)?.n_places_min ?? 0,
+                            props.inventaire.find((item) => item.g_no_lot === feature?.properties?.g_no_lot && item.methode_estime === 1)?.n_places_mesure ?? 0,
+                            props.inventaire.find((item) => item.g_no_lot === feature?.properties?.g_no_lot && item.methode_estime === 3)?.n_places_min ?? 0)
+                            : 0;
+                        return {
+                            color: isLotInAnalyse ? 'green' : 'blue', // Border color based on condition
+                            weight: 2,     // Border thickness
+                            fillColor: (isLotInAnalyse ? // is it a selected feature, if yes, pink, else colorscale
+                                            'pink' : 
+                                            (props.optionCouleur !== -1 ? // is a color option selected if so move to conditional if not blue
+                                                (hasInventaire ? // if there is inventory, then colorscale, if not blue
+                                                    (
+                                                        parkingInventory === 0 ? //if invnetory is zero make black else colorscale
+                                                            'black' : 
+                                                            colorScale(Number(parkingInventory) || minValue).hex() 
+                                                    ): 
+                                                    'cyan' 
+                                                )
+                                                : 
+                                            'cyan'
+                                            )
+                                        ), // Fill color based on condition
+                            fillOpacity: 0.5,  // Fill transparency
+                        };
+                    },
+                    onEachFeature: (feature: any, layer: any) => {
+                        if (feature.properties) {
+                            layer.on({
+                                click: handleLotClick
+                            });
+                        }
+                    }
+                });
+
+                if (!geoJsonLayerGroupRef.current) {
+                    geoJsonLayerGroupRef.current = L.layerGroup().addTo(map); // Create the layer group if it doesn't exist
+                }
+
+                geoJsonLayer.addTo(geoJsonLayerGroupRef.current); // Add the new layer to the group
+
+                // Create a legend based on the color scale
+                let legend: L.Control | null = null;
+                function removeLegends(map: L.Map) {
+                    // Select all elements with the class 'info legend' and remove them
+                    const existingLegends = document.querySelectorAll('.info.legend');
+                    existingLegends.forEach(legend => {
+                        legend.remove();
+                    });
+                }
+
+                function addLegendToMap(map: L.Map, maxValue: number, minValue: number, colorScale: chroma.Scale) {
+                    // Remove existing legend if it exists
+                    removeLegends(map);
+                    // Create a new legend
+                    legend = new L.Control({ position: 'bottomright' });
+
+                    legend.onAdd = function () {
+                        const div = L.DomUtil.create('div', 'info legend');
+                        const grades = [0, 1, (maxValue + minValue) / 2, maxValue]; // Define breakpoints
+                        const labels = [];
+                        labels.push('N stat.');
+                        // Generate legend items based on color scale
+                        grades.forEach((grade, index) => {
+                            const color = grade === 0 ? 'black' : colorScale(grade).hex();
+                            labels.push(
+                                `<i style="background:${color}"></i> ${Math.round(grade)}`
+                            );
+                        });
+
+                        div.innerHTML = labels.join('<br>');
+                        return div;
+                    };
+
+                    // Add the new legend to the map
+                    legend.addTo(map);
+                }
+
+                // Call the function to add the legend
+                if (props.optionCouleur !== -1) {
+                    addLegendToMap(map, maxValue, minValue, colorScale);
+                }
+                // Check if inventaire has changed before adjusting bounds
+                if (prevInventaireRef.current !== props.lotsDuQuartier) {
+                    const bounds = geoJsonLayer.getBounds();
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds);
+                    }
+                }
+
+                prevInventaireRef.current = props.lotsDuQuartier;
+
+            }
+        }
+    }, [props.lotsDuQuartier, map, props.montrerTousLots,props.inventaire,props.optionCouleur]); // Dependency on props.geoJsondata and map
+
+    return null; // No need to render anything for the map component itself
+};
+
+
+export default CarteInventaire;

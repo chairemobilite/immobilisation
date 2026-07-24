@@ -5,7 +5,7 @@ import { useState } from 'react';
 import {  TypesVisualisationAnalyseQuartier,PrioriteEstimeInventaire, VariablesPossibles } from '../types/AnalysisTypes';
 import './common.css';
 import './analyseparquartiers.css'
-import AnalyseCartographiqueQuartiers from '../components/AnalyseCartographiqueQuartiers';
+import AnalyseCartographiqueQuartiers from '../components/panels/AnalyseCartographiqueQuartiers';
 import AnalyseProfilAccumulationVehiculeQuartiers from '../components/panels/AnalyseProfilAccumulationVehicule';
 import AnalyseHistogrammeQuartier from '../components/panels/AnalyseHistogrammeQuartier';
 import AnalyseXYQuartiers from '../components/panels/AnalyseXYQuartiers';

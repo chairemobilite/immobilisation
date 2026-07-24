@@ -7,7 +7,7 @@ import { association_territoire_entete_ensemble_reglement, entete_ensembles_regl
 import GeoJSON,{FeatureCollection,Geometry} from 'geojson';
 import ControlEnsRegTerr from '../components/menus/ControlEnsRegTerr';
 import { serviceHistorique } from '../services';
-import CarteEnsRegTerr from '../components/carteEnsRegTerr';
+import CarteEnsRegTerr from '../components/maps/carteEnsRegTerr';
 import { LatLngExpression } from 'leaflet';
 
 const EnsRegTerritoire: React.FC =()=>{

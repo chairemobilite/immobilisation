@@ -1,5 +1,5 @@
 import { PropsPanneauValid } from "../../types/InterfaceTypes"
-import CarteValidation from "../CarteValidation";
+import CarteValidation from "../maps/CarteValidation";
 import GraphiqueValidation from "../charts/GraphiqueValidation";
 import ListeLotsValidation from "../lists/ListeLotsValidation";
 import TableRevisionValidation from "../tables/TableRevisionValidation";

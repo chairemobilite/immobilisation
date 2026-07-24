@@ -1,14 +1,14 @@
-import React from 'react';
-import { AnalyseCartoQuartierProps } from "../types/InterfaceTypes";
-import { GeoJSONPropsAnaQuartier, TypesAnalysesCartographiqueQuartier } from '../types/AnalysisTypes';
+import React, { RefObject } from 'react';
+import { AnalyseCartoQuartierProps } from "../../types/InterfaceTypes";
+import { GeoJSONPropsAnaQuartier, TypesAnalysesCartographiqueQuartier } from '../../types/AnalysisTypes';
 import { useState,useEffect,useRef } from 'react';
-import { serviceAnalyseInventaire } from '../services/serviceAnalyseInventaire';
+import { serviceAnalyseInventaire } from '../../services/serviceAnalyseInventaire';
 import { Feature, FeatureCollection,Geometry } from 'geojson';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import "leaflet/dist/leaflet.css";
 import L, { LeafletEvent,LatLngExpression } from 'leaflet';
 import chroma from 'chroma-js';
-import { utiliserContexte } from '../contexte/ContexteImmobilisation';
+import { utiliserContexte } from '../../contexte/ContexteImmobilisation';
 import { Download } from '@mui/icons-material';
 const AnalyseCartographiqueQuartiers:React.FC<AnalyseCartoQuartierProps>=(props:AnalyseCartoQuartierProps)=>{
     const [typeCarto,defTypeCarto] = useState<number>(-1);
@@ -31,7 +31,111 @@ const AnalyseCartographiqueQuartiers:React.FC<AnalyseCartoQuartierProps>=(props:
     const attributionCarto = optionsCartos.find((entree)=>entree.id===optionCartoChoisie)?.attribution??'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     const geoJsonLayerGroupRef = useRef<L.LayerGroup | null>(null); // Refe
     const prevInventaireRef = useRef<GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSONPropsAnaQuartier> | null>(null);
-    const MapComponent = () => {
+   
+    const saveGeoJSON = ( filename = "data.geojson") => {
+        const blob = new Blob([JSON.stringify(cartoAMontrer)], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+    const gestSelectionCarto = async(idTypeAnalyse:number) =>{
+        try{
+            let CartoRep;
+            defCartoValide(false)
+            defChargement(true)
+            if (idTypeAnalyse!==-1){
+                CartoRep = await serviceAnalyseInventaire.obtientVariableAgregeParQuartierCarto(props.prioriteInventairePossibles.find((ordre)=> ordre.idPriorite=== props.prioriteInventaire)?.listeMethodesOrdonnees??[1,3,2],props.variablesPossibles.find((item)=>item.idVariable===idTypeAnalyse)?.queryKey??'stat-tot')
+            } else{
+                CartoRep = {success:false,data:{
+                    type: "FeatureCollection",
+                    features: []
+                } as FeatureCollection<Geometry,GeoJSONPropsAnaQuartier>}
+            }
+            if (CartoRep && CartoRep.success){
+                defCartoValide(true)
+                defChargement(false)
+                defCartoAMontrer(CartoRep.data)
+                defTypeCarto(idTypeAnalyse)
+            } else{
+                defChargement(false)
+                defCartoValide(false)
+                defCartoAMontrer({
+                    type: "FeatureCollection",
+                    features: []
+                })
+                defTypeCarto(idTypeAnalyse)
+            }
+        }catch(err:any){
+            alert('Erreur lors du chargement')
+        }finally{
+            defChargement(false)
+        }
+    }
+    const renduCartographie = ()=>{
+        if ((chargement)){
+            return(<p>Chargement en cours - Chill le grand</p>)
+        } else if(cartoValid && !chargement){
+            return(<div className="carte-quartiers">
+                <MapContainer
+                  center={positionDepart}
+                  zoom={zoomDepart}
+                  style={{ height: '100%', width: '100%' }}
+                  
+                >
+                  <TileLayer
+                    url={urlCarto}
+                    attribution={attributionCarto}
+                    maxZoom={zoomCarto}
+                    minZoom={1}
+                  />
+                  {cartoValid && (<>
+                    <MapComponent 
+                        geoJsonLayerGroupRef={geoJsonLayerGroupRef}
+                        prevInventaireRef={prevInventaireRef}
+                        cartoAMontrer={cartoAMontrer}
+                    />
+                  </>
+                  )}
+                </MapContainer>
+              </div>
+              );
+        }
+    }
+ 
+    return(<>
+        <div className="menu-selection-couleur">
+            <label htmlFor="select-map-color">Type d'analyse cartographique</label>
+            <select id="select-map-color" name="select-type" onChange={e => gestSelectionCarto(Number(e.target.value))} value={typeCarto}>
+                <option value={-1}>Selection carto</option>
+                {props.variablesPossibles.map(methode=>(
+                    <option key={methode.idVariable} value={methode.idVariable} >
+                        {methode.descriptionVariable}
+                    </option>
+                ))}
+            </select>
+            <Download onClick={() => saveGeoJSON()}/>
+        </div>
+        {renduCartographie()}
+        </>
+    )
+}
+
+
+ const MapComponent = (
+    {
+        geoJsonLayerGroupRef,
+        cartoAMontrer,
+        prevInventaireRef
+    }:{
+        geoJsonLayerGroupRef: RefObject<L.LayerGroup|null>
+        cartoAMontrer:FeatureCollection<Geometry,GeoJSONPropsAnaQuartier>,
+        prevInventaireRef:RefObject<GeoJSON.FeatureCollection<GeoJSON.Geometry, GeoJSONPropsAnaQuartier> | null>
+    }
+
+ ) => {
         const map = useMap(); // Access the map instance
 
             useEffect(() => {
@@ -124,88 +228,5 @@ const AnalyseCartographiqueQuartiers:React.FC<AnalyseCartoQuartierProps>=(props:
 
             return null; // No need to render anything for the map component itself
     };
-
-    const saveGeoJSON = ( filename = "data.geojson") => {
-        const blob = new Blob([JSON.stringify(cartoAMontrer)], { type: "application/json" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-    const gestSelectionCarto = async(idTypeAnalyse:number) =>{
-        let CartoRep;
-        defCartoValide(false)
-        defChargement(true)
-        if (idTypeAnalyse!==-1){
-            CartoRep = await serviceAnalyseInventaire.obtientVariableAgregeParQuartierCarto(props.prioriteInventairePossibles.find((ordre)=> ordre.idPriorite=== props.prioriteInventaire)?.listeMethodesOrdonnees??[1,3,2],props.variablesPossibles.find((item)=>item.idVariable===idTypeAnalyse)?.queryKey??'stat-tot')
-        } else{
-            CartoRep = {success:false,data:{
-                type: "FeatureCollection",
-                features: []
-            } as FeatureCollection<Geometry,GeoJSONPropsAnaQuartier>}
-        }
-        if (CartoRep && CartoRep.success){
-            defCartoValide(true)
-            defChargement(false)
-            defCartoAMontrer(CartoRep.data)
-            defTypeCarto(idTypeAnalyse)
-        } else{
-            defChargement(false)
-            defCartoValide(false)
-            defCartoAMontrer({
-                type: "FeatureCollection",
-                features: []
-            })
-            defTypeCarto(idTypeAnalyse)
-        }
-
-
-    }
-    const renduCartographie = ()=>{
-        if ((chargement)){
-            return(<p>Chargement en cours - Chill le grand</p>)
-        } else if(cartoValid && !chargement){
-            return(<div className="carte-quartiers">
-                <MapContainer
-                  center={positionDepart}
-                  zoom={zoomDepart}
-                  style={{ height: '100%', width: '100%' }}
-                  
-                >
-                  <TileLayer
-                    url={urlCarto}
-                    attribution={attributionCarto}
-                    maxZoom={zoomCarto}
-                    minZoom={1}
-                  />
-                  {cartoValid && (<>
-                    <MapComponent />
-                  </>
-                  )}
-                </MapContainer>
-              </div>
-              );
-        }
-    }
- 
-    return(<>
-        <div className="menu-selection-couleur">
-            <label htmlFor="select-map-color">Type d'analyse cartographique</label>
-            <select id="select-map-color" name="select-type" onChange={e => gestSelectionCarto(Number(e.target.value))} value={typeCarto}>
-                <option value={-1}>Selection carto</option>
-                {props.variablesPossibles.map(methode=>(
-                    <option key={methode.idVariable} value={methode.idVariable} >
-                        {methode.descriptionVariable}
-                    </option>
-                ))}
-            </select>
-            <Download onClick={() => saveGeoJSON()}/>
-        </div>
-        {renduCartographie()}
-        </>
-    )
-}
 
 export default AnalyseCartographiqueQuartiers;

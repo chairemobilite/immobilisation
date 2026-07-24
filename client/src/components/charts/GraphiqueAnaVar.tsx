@@ -1,9 +1,9 @@
 import { FC, useState, useEffect } from 'react'
-import { GraphiqueReglementsProps, PropsGraphAnaVar } from '../types/InterfaceTypes'
+import { GraphiqueReglementsProps, PropsGraphAnaVar } from '../../types/InterfaceTypes'
 import { Chart as ChartPlot, Bar, Line } from 'react-chartjs-2';
-import { data_graphique, utilisation_sol, data_box_plot, data_graphique_text_labels } from '../types/DataTypes';
-import { serviceAnaVariabilite } from '../services/serviceAnaVariabilite';
-import serviceUtilisationDuSol from '../services/serviceUtilisationDuSol';
+import { data_graphique, utilisation_sol, data_box_plot, data_graphique_text_labels } from '../../types/DataTypes';
+import { serviceAnaVariabilite } from '../../services/serviceAnaVariabilite';
+import serviceUtilisationDuSol from '../../services/serviceUtilisationDuSol';
 import { BoxPlotDataPoint } from '@sgratzl/chartjs-chart-boxplot';
 import { ChartData, ChartDataset } from 'chart.js';
 
@@ -483,7 +483,7 @@ const GraphiqueAnaVar: FC<PropsGraphAnaVar> = (props: PropsGraphAnaVar) => {
                                             let label = '';
                                             if (props.methodeVisualisation.idMethodeAnalyse === 0) {
                                                 if (props.ensRegReference !== -1) {
-                                                    label = `Indice pour ${context.label}par rapport à référence (100): ${value.toFixed(2)}`;
+                                                    label = `Indice pour ${context.label} par rapport à référence (100): ${value.toFixed(2)}`;
                                                 } else {
                                                     label = `${ds.label}: ${value.toFixed(2)} places`;
                                                 }

@@ -3,7 +3,7 @@ import TableHistoire from '../components/tables/TableHistoire';
 import TableTerritoire from '../components/tables/TableTerritoire';
 import MenuBar from '../components/menus/MenuBar';
 import { ResizableBox } from 'react-resizable';
-import CarteHistorique from '../components/carteHistorique';
+import CarteHistorique from '../components/maps/carteHistorique';
 import { territoire ,territoireGeoJsonProperties} from '../types/DataTypes';
 import {LatLngExpression} from 'leaflet';
 import { serviceHistorique } from '../services';

@@ -10,7 +10,7 @@ import MenuManipSecAnalyse from '../components/menus/MenuManipSecAnalyse';
 import TableSecAnalyse from '../components/tables/TableSecAnalyse';    
 import { NouveauAncienSecteurAnalyse } from '../types/InterfaceTypes';
 import { serviceQuartiersAnalyse } from '../services';
-import CarteSecAnalyse from '../components/CarteSecAnalyse';
+import CarteSecAnalyse from '../components/maps/CarteSecAnalyse';
 import { LatLngExpression } from 'leaflet';
 const VersementSecAnalyse: React.FC = () => {
     const [modal, setModal] = React.useState<boolean>(false);
