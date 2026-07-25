@@ -2,6 +2,9 @@ FROM node:24
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY tsconfig.json ./
+
+COPY index.html ./
+COPY vite.config.ts ./
 # Update npm to the latest version
 RUN npm config set cache /app/.npm-cache --global
 RUN npm install -g npm@11.12.1
@@ -9,10 +12,10 @@ RUN npm install
 
 # Copiez uniquement les répertoires et fichiers nécessaires
 COPY src ./src
-COPY public ./public
+
 ENV WATCHPACK_POLLING=true
 ENV CHOKIDAR_USEPOLLING=true
 ENV FAST_REFRESH=true
 #ENV PATH /app/node_modules/.bin:$PATH
 EXPOSE 3000
-CMD ["npx","react-scripts", "start"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]
