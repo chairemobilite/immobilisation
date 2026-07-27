@@ -11,7 +11,6 @@ import CarteInventaire from '../components/carteInventaire';
 import TableRevueInventaire from '../components/panels/RevueInventaire';
 import './visualisationInventaire.css';
 import './common.css';
-import CompoModifInventaire from '../components/panels/modifInventaire';
 import ComparaisonInventaireQuartier from '../components/panels/ComparaisonInventaireQuartier';
 import MenuInventaire from '../components/menus/MenuInventaire';
 import ModalRecomputeInventaire from '../components/modals/ModalRecomputeInventaire';
