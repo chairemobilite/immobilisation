@@ -1,9 +1,9 @@
 import { FC, useState } from "react";
-import MenuBar from "../components/MenuBar";
-import ModalVersementGen from "../components/ModalVersement";
+import MenuBar from "../components/menus/MenuBar";
+import ModalVersementGen from "../components/uploadComponents/ModalVersement";
 import { EquivalenceVersementCarto, recensementGeoJsonProperties } from "../types/DataTypes";
-import MenuManipRecensement from "../components/MenuManipRecensement";
-import CarteVisionnementRecensement from "../components/CarteVisionnementRecensement";
+import MenuManipRecensement from "../components/menus/MenuManipRecensement";
+import CarteVisionnementRecensement from "../components/maps/CarteVisionnementRecensement";
 import './common.css'
 import './versementRecensement.css'
 import { useRecensementViewPort } from "../map/hooks/useRecensementViewport";

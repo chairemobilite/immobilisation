@@ -1,5 +1,5 @@
-import MenuBar from '../components/MenuBar'
-import TableSommaireVersementDonnees from '../components/TableSommaireVersementDonnees'
+import MenuBar from '../components/menus/MenuBar'
+import TableSommaireVersementDonnees from '../components/tables/TableSommaireVersementDonnees'
 import './common.css'
 import './sommaireVersement.css'
 import {FC} from 'react'

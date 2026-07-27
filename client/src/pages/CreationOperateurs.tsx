@@ -1,8 +1,8 @@
 import { FC } from "react"
-import MenuBar from "../components/MenuBar"
+import MenuBar from "../components/menus/MenuBar"
 import './common.css'
 import './creationOperateurs.css'
-import PanneauCreationOperateurs from "../components/PanneauCreationOperateurs"
+import PanneauCreationOperateurs from "../components/panels/PanneauCreationOperateurs"
 
 
 const CreationOperateurs:FC=()=>{

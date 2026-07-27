@@ -1,15 +1,20 @@
-import MenuBar from "../components/MenuBar";
-import TableListeEnsReg from "../components/TableListeEnsReg";
-import TableVisModEnsReg from "../components/TableVisEnsReg";
+import MenuBar from "../components/menus/MenuBar";
+import TableListeEnsReg from "../components/lists/TableListeEnsReg";
+import TableVisModEnsReg from "../components/tables/TableVisEnsReg";
 import { useState, useEffect, useRef } from "react";
 import {useSearchParams} from 'react-router'
 import {  association_util_reglement, ensemble_reglements_stationnement, entete_reglement_stationnement } from "../types/DataTypes";
 import { entete_ensembles_reglement_stationnement } from "../types/DataTypes";
-import CreationAssociationCubfRegEnsReg from "../components/CreationAssociationCubfRegEnsReg";
+import CreationAssociationCubfRegEnsReg from "../components/modals/CreationAssociationCubfRegEnsReg";
 import './ensemblereg.css'
 import './common.css'
 import { serviceEnsemblesReglements } from "../services";
 
+/**
+ * this is the main page item for the modification of regulation sets. There are 2 big panels 
+ * and 2 modals as part of this page which handle the various interactions
+ * @returns a tsx page which can be used for render
+ */
 const EnsemblesReglements: React.FC = () => {
     const enteteEnsemblevide: entete_ensembles_reglement_stationnement = {
         id_er:0,

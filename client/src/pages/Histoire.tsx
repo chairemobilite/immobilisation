@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
-import TableHistoire from '../components/TableHistoire';
-import TableTerritoire from '../components/TableTerritoire';
-import MenuBar from '../components/MenuBar';
+import TableHistoire from '../components/tables/TableHistoire';
+import TableTerritoire from '../components/tables/TableTerritoire';
+import MenuBar from '../components/menus/MenuBar';
 import { ResizableBox } from 'react-resizable';
 import CarteHistorique from '../components/carteHistorique';
 import { territoire ,territoireGeoJsonProperties} from '../types/DataTypes';
@@ -9,7 +9,7 @@ import {LatLngExpression} from 'leaflet';
 import { serviceHistorique } from '../services';
 import { serviceTerritoires } from '../services';
 import { FeatureCollection,Geometry } from 'geojson';
-import ModalVersementTerritoires from '../components/ModalVersementTerritoires';
+import ModalVersementTerritoires from '../components/uploadComponents/ModalVersementTerritoires';
 
 import './common.css';
 import './histoire.css'

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import MenuBar from '../components/MenuBar';
+import MenuBar from '../components/menus/MenuBar';
 import './common.css';
 import './validationStatistique.css'
-import ControlValStat from '../components/ControlValStat';
-import ModifStrates from '../components/modifStrates';
+import ControlValStat from '../components/menus/ControlValStat';
+import ModifStrates from '../components/panels/modifStrates';
 import { EntreeValidation, FeuilleFinaleStrate, inventaire_stationnement, lotCadastralAvecBoolInvGeoJsonProperties, lotCadastralGeoJsonProperties, Strate } from '../types/DataTypes';
-import DefinitionStratesEchantionnage from '../components/definitionStratesEchantionnage';
+import DefinitionStratesEchantionnage from '../components/panels/definitionStratesEchantionnage';
 import serviceValidation from '../services/serviceValidation';
 import { ClimbingBoxLoader } from 'react-spinners';
-import PanneauValidation from '../components/PanneauValidation';
+import PanneauValidation from '../components/panels/PanneauValidation';
 import { FeatureCollection, Geometry } from 'geojson';
 import { serviceCadastre } from '../services';
 import { LatLngExpression } from 'leaflet';

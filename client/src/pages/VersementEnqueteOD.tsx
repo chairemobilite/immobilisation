@@ -1,13 +1,13 @@
 import { FC, use, useState } from "react";
-import MenuBar from "../components/MenuBar";
+import MenuBar from "../components/menus/MenuBar";
 import './common.css'
 import './versementEnqueteOD.css'
-import CarteVerseEnqueteOD from "../components/CarteVerseEnqueteOD";
+import CarteVerseEnqueteOD from "../components/maps/CarteVerseEnqueteOD";
 import { ODGeomTypes } from "../types/EnumTypes";
-import MenuVerseEnqueteOD from "../components/MenuVersementEnqueteOD";
-import ModalVersementOD from "../components/ModalVersementOD";
+import MenuVerseEnqueteOD from "../components/menus/MenuVersementEnqueteOD";
+import ModalVersementOD from "../components/uploadComponents/ModalVersementOD";
 import { EquivalenceCSVCoordPoint, EquivalenceVersementCarto } from "../types/DataTypes";
-import BoutonApprobationVerse from "../components/BoutonApprobationVerse";
+import BoutonApprobationVerse from "../components/uploadComponents/BoutonApprobationVerse";
 import { ServiceEnqueteOD } from "../services/serviceEnqueteOD";
 import { LatLngBounds } from "leaflet";
 import { ServiceFichierCSV } from "../services/serviceFichierCSV";

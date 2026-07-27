@@ -2,7 +2,7 @@ import { EntreeValidation, FeuilleFinaleStrate,  Strate } from "../types/DataTyp
 import axios, { AxiosResponse } from 'axios';
 import api from './api';
 import { ApiResponse, ReponseDataGraphique, ReponseFeuilles, ReponseResultatValidation, ReponseStrateUnique, ReponseStrateValide,RequeteApiStrate, RequeteResultatValidation } from "../types/serviceTypes";
-export const serviceValidation = {
+const serviceValidation = {
     obtiensStrates:async(requeteApiStrate?:RequeteApiStrate):Promise<ReponseStrateValide>=>{
         try{
             let conditions:string[] = [];
