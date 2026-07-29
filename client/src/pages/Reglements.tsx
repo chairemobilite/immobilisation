@@ -3,7 +3,7 @@ import TableEnteteReglements from "../components/TableEnteteReglements";
 import TableVisModReglement from "../components/tableVisReglement";
 import { useState, useEffect, useRef } from "react";
 import { entete_reglement_stationnement, definition_reglement_stationnement, reglement_complet } from "../types/DataTypes";
-import { useSearchParams } from "react-router";
+import { useSearchParams } from "react-router-dom";
 import './reg.css';
 import './common.css';
 import { serviceReglements } from "../services";

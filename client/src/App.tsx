@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router';
+import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom'
 import Histoire from './pages/Histoire';
 import VisualisationInventaire from './pages/VisualisationInventaire';
 import Reglements from './pages/Reglements';

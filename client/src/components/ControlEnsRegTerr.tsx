@@ -2,7 +2,7 @@ import React,{useState,useEffect} from 'react';
 import { EnsRegTerrControlProps } from '../types/InterfaceTypes';
 import { serviceEnsemblesReglements, serviceHistorique, serviceTerritoires } from '../services';
 import { serviceEnsRegTerr } from '../services/serviceEnsRegTerr';
-import { useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 
 const ControlEnsRegTerr:React.FC<EnsRegTerrControlProps> = (props:EnsRegTerrControlProps) =>{
