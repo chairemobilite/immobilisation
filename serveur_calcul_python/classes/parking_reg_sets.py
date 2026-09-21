@@ -527,7 +527,7 @@ def get_parking_reg_for_lot(lot_id:str)->pd.DataFrame:
         if association_with_rule.empty:
             association_with_rule = association_final
         else:
-            association_with_rule = pd.concat(association_with_rule,association_final)
+            association_with_rule = pd.concat([association_with_rule,association_final])
     units = get_units_for_regs(association_with_rule[config_db.db_column_parking_regs_id].to_list())
     association_with_rule= association_with_rule.merge(units,how='left',on=config_db.db_column_parking_regs_id)
     return association_with_rule
